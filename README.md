@@ -9,14 +9,14 @@ https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=b238c567369cd42a
 
 contract- dublin
 
-Extracting important parameters from JSON file
-number
-name
-address
-position
-lat
-lng
-bike_stands
-available_bike_stands
-available_bikes
-status
+Extracting important parameters from JSON file:
+<br>number
+<br>name
+<br>address
+<br>position
+<br>lat
+<br>lng
+<br>bike_stands
+<br>available_bike_stands
+<br>available_bikes
+<br>status
