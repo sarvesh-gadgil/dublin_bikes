@@ -1,11 +1,9 @@
 import pymysql
 
-# host = "dublin-bikes.c96ersz2ktrh.us-east-1.rds.amazonaws.com"
-host = "localhost"
+host = "dublin-bikes.c96ersz2ktrh.us-east-1.rds.amazonaws.com"
 dbname = "dublin_bikes"
 user = "root"
-# password = "dublin_bikes_root"
-password = "Chaitu@2601"
+password = "dublin_bikes_root"
 
 
 def get_db_connection():
