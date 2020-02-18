@@ -1,3 +1,4 @@
+import datetime as datetime
 import dbconnect
 import time
 from datetime import datetime
@@ -7,10 +8,15 @@ import requests
 URL = "https://api.jcdecaux.com/vls/v1/stations"
 PARAMS = {'contract': "dublin", 'apiKey': "b238c567369cd42aa05c043e8313cb16ef7bacda"}
 
+WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
 
-def get_api_response():
+
+def get_api_response(api_type, **kwargs):
     # Make a GET request and return json response
-    return requests.get(url=URL, params=PARAMS).json()
+    if api_type == 'bikes':
+        return requests.get(url=URL, params=PARAMS).json()
+    elif api_type == 'weather':
+        return requests.get(url=WEATHER_URL, params=kwargs['weather_data']).json()
 
 
 def save_data_in_db(insert_type, data_list, conn):
@@ -51,12 +57,28 @@ def check_dynamic_data_exists(conn, available_bike_stands, available_bikes, stat
     return cursor.rowcount >= 1
 
 
-def get_weather_info(lat, lng, number):
-    # Steps (use open weather API):
-    # 1) Get the weather info from API using lat and lng
-    # 2) Extract the information and store it in db
-    # 3) Check if data is unique then only save in db
-    pass
+def save_weather_info(lat, lng, number):
+    WEATHER_PARAMS = {'appid': "b35975e18dc93725acb092f7272cc6b8", 'lat': lat, 'lon': lng}
+    response = get_api_response('weather', weather_data=WEATHER_PARAMS)
+    print("weather json:-", response)
+    temperature = (response['temp'] - 32) / 1.8
+    feels_like_temperature = (response['feels_like'] - 32) / 1.8
+    temperature_min = (response['temp_min'] - 32) / 1.8
+    temperature_max = (response['temp_max'] - 32) / 1.8
+    sunrise_time = datetime.fromtimestamp(response['sunrise'])
+    sunset_time = datetime.fromtimestamp(response['sunset'])
+
+    sql = 'INSERT INTO weather_details ' \ '('number' , 'weather', 'weather_description', 'temperature', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity', 'visibility', 'speed', 'sunrise', 'sunset
+     \
+     = 'VALUES ("%d", "%s", "%s", "%f", "%f", "%f", "%f", "%f", "%d", "%d", "%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M:%S")' % (
+        data['number'], response['weather']['main'], response['weather']['main'], temperature, feels_like_temperature,
+        temperature_min, temperature_max, response['main']['pressure'], response['main']['humidity'],
+        response['visiblity'], response['wind']['speed']
+        , sunrise_time, sunset_time)
+    )
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    return cursor.rowcount == 1
 
 
 while True:
@@ -66,7 +88,7 @@ while True:
         connection = dbconnect.get_db_connection()
 
         # Make API request to JCDecaux and get response in JSON
-        json_data = get_api_response()
+        json_data = get_api_response('bikes')
 
         # Iterating json response
         for data in json_data:
@@ -99,9 +121,7 @@ while True:
                 connection.rollback()
 
             try:
-                # TODO Getting weather data and save it in db (use method below)
-                # get_weather_info(data['position']['lat'], data['position']['lng'], data['number'])
-                pass
+                save_weather_info(data['position']['lat'], data['position']['lng'], data['number'])
             except Exception as e:
                 print("Error in saving weather data. Data is:-")
                 print(data)
