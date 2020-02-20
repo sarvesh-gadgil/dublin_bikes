@@ -1,7 +1,7 @@
 # Software Engineering Assignment 2
 This readme file provides information about project. All the information about project flow must be stored here.
 
-##Details for Dublin Bikes API
+## Details for Dublin Bikes API
 
 API key for JCDecaux : 
 b238c567369cd42aa05c043e8313cb16ef7bacda
