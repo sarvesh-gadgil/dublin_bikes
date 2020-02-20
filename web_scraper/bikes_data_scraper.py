@@ -1,24 +1,10 @@
-import datetime as datetime
+from datetime import datetime
 import dbconnect
 import time
-from datetime import datetime
-import requests
 
 # URL and PARAMS for JCDecaux API
 URL = "https://api.jcdecaux.com/vls/v1/stations"
 PARAMS = {'contract': "dublin", 'apiKey': "b238c567369cd42aa05c043e8313cb16ef7bacda"}
-
-# Open Weather API URL
-WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
-WEATHER_PARAMS = {'appid': "b35975e18dc93725acb092f7272cc6b8"}
-
-
-def get_api_response(api_type, **kwargs):
-    # Make a GET request and return json response
-    if api_type == 'bikes':
-        return requests.get(url=URL, params=PARAMS).json()
-    elif api_type == 'weather':
-        return requests.get(url=WEATHER_URL, params=kwargs['weather_data']).json()
 
 
 def save_data_in_db(insert_type, response, conn):
@@ -37,21 +23,6 @@ def save_data_in_db(insert_type, response, conn):
               "VALUES ('%d', '%d', '%s', '%s', '%d')" % (
                   response['available_bike_stands'], response['available_bikes'], response['status'],
                   datetime.fromtimestamp(response['last_update'] // 1000), response['number'])
-    else:
-        temperature = round(response['main']['temp'] - 273.15)
-        feels_like_temperature = round(response['main']['feels_like'] - 273.15)
-        temperature_min = round(response['main']['temp_min'] - 273.15)
-        temperature_max = round(response['main']['temp_max'] - 273.15)
-        sunrise_time = datetime.fromtimestamp(response['sys']['sunrise'])
-        sunset_time = datetime.fromtimestamp(response['sys']['sunset'])
-
-        sql = 'INSERT INTO weather_details (`weather`, `weather_description`, `temperature`, `feels_like`, ' \
-              '`temp_min`, `temp_max`, `pressure`, `humidity`, `visibility`, `speed`, `sunrise`, `sunset`,`number`)' \
-              'VALUES ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%d")' \
-              % (response['weather'][0]['main'], response['weather'][0]['description'], temperature,
-                 feels_like_temperature,
-                 temperature_min, temperature_max, response['main']['pressure'], response['main']['humidity'],
-                 response['visibility'], response['wind']['speed'], sunrise_time, sunset_time, response["number"])
 
     # Execute query
     conn.cursor().execute(sql)
@@ -67,25 +38,13 @@ def check_static_data_exists(conn, number):
     return cursor.rowcount == 1
 
 
-def check_dynamic_data_exists(conn, available_bike_stands, available_bikes, status, number):
-    sql = "select number from dynamic_bike_details " \
-          "where available_bike_stands = '%s' and available_bikes = '%s' and status = '%s' and number = '%d'" \
-          % (available_bike_stands, available_bikes, status, number)
-    cursor = conn.cursor()
-    cursor.execute(sql)
-    return cursor.rowcount >= 1
-
-
-def save_weather_info(lat, lng, number, conn):
-    # Adding more params for accuracy instead of just getting weather of Dublin
-    WEATHER_PARAMS["lat"] = lat
-    WEATHER_PARAMS["lon"] = lng
-    # Sending request and getting response
-    response = get_api_response('weather', weather_data=WEATHER_PARAMS)
-    # Adding primary key of number for passing response to function
-    response["number"] = number
-    # Saving data in DB
-    save_data_in_db('weather', response, conn)
+# def check_dynamic_data_exists(conn, available_bike_stands, available_bikes, status, number):
+#     sql = "select number from dynamic_bike_details " \
+#           "where available_bike_stands = '%s' and available_bikes = '%s' and status = '%s' and number = '%d'" \
+#           % (available_bike_stands, available_bikes, status, number)
+#     cursor = conn.cursor()
+#     cursor.execute(sql)
+#     return cursor.rowcount >= 1
 
 
 while True:
@@ -95,7 +54,7 @@ while True:
         connection = dbconnect.get_db_connection()
 
         # Make API request to JCDecaux and get response in JSON
-        json_data = get_api_response('bikes')
+        json_data = dbconnect.get_api_response(URL, PARAMS)
 
         # Iterating json response
         for data in json_data:
@@ -121,15 +80,6 @@ while True:
                 print('Error is:', e)
                 connection.rollback()
 
-            # Saving weather data
-            try:
-                save_weather_info(data['position']['lat'], data['position']['lng'], data['number'], connection)
-            except Exception as e:
-                print("\nError in saving weather data. Data is:-")
-                print(data)
-                print('Error is:', e)
-                connection.rollback()
-
         try:
             # Closing connection.
             # Also enclosing this in try catch to prevent any connection closing exception
@@ -141,4 +91,4 @@ while True:
         time.sleep(360)  # sleep for 6 min
 
     except Exception as e:
-        print("Error in while loop:", e)
+        print("Error in bike scraper while loop:", e)
