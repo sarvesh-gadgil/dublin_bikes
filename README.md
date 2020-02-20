@@ -9,7 +9,7 @@ https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=b238c567369cd42a
 
 contract- dublin
 
-Extracting important parameters from JSON file:
+Static parameters are:
 <br>number
 <br>name
 <br>address
@@ -17,6 +17,9 @@ Extracting important parameters from JSON file:
 <br>lat
 <br>lng
 <br>bike_stands
+
+Dynamic parameters are:
 <br>available_bike_stands
 <br>available_bikes
 <br>status
+<br>last_update
