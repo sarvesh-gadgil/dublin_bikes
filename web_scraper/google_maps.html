@@ -1,0 +1,126 @@
+ <!DOCTYPE html>
+    <html>
+
+    <head>
+        <style>
+            /*  <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>       Set the size of the div element that contains the map */
+            #map {
+                height: 400px;
+                /* The height is 400 pixels */
+                width: 100%;
+                /* The width is the width of the web page */
+            }
+        </style>
+        <script>
+            var map;
+            var InforObj = [];
+            var centerCords = {
+                lat: 53.357841,
+                lng: -6.251557
+            };
+            var markersOnMap = [{
+                    placeName: "North Circular Road (O'Connell's)",
+                    LatLng: [{
+                        lat: 53.357841,
+                        lng: -6.251557
+                    }]
+                },
+                {
+                    placeName: "Hanover Quay",
+                    LatLng: [{
+                        lat: 53.344115,
+                        lng: -6.237153
+                    }]
+                },
+                {
+                    placeName: "Oliver Bond Street",
+                    LatLng: [{
+                        lat: 53.343893,
+                        lng: -6.280531
+                    }]
+                },
+                {
+                    placeName: "Collins Barracks Museum",
+                    LatLng: [{
+                        lat: 53.347477,
+                        lng: -6.28525
+                    }]
+                },
+                {
+                    placeName: "Brookfield Road",
+                    LatLng: [{
+                        lat: 53.339005,
+                        lng: -6.300217
+                    }]
+                }
+            ];
+
+            window.onload = function () {
+                initMap();
+            };
+
+            function addMarkerInfo() {
+                for (var i = 0; i < markersOnMap.length; i++) {
+                    var contentString = '<div id="content"><h1>' + markersOnMap[i].placeName +
+                        '</h1><p>Lorem ipsum dolor sit amet, vix mutat posse suscipit id, vel ea tantas omittam detraxit.</p></div>';
+
+                    const marker = new google.maps.Marker({
+                        position: markersOnMap[i].LatLng[0],
+                        map: map
+                    });
+
+                    const infowindow = new google.maps.InfoWindow({
+                        content: contentString,
+                        maxWidth: 200
+                    });
+
+                    marker.addListener('click', function () {
+                        closeOtherInfo();
+                        infowindow.open(marker.get('map'), marker);
+                        InforObj[0] = infowindow;
+                    });
+                    // marker.addListener('mouseover', function () {
+                    //     closeOtherInfo();
+                    //     infowindow.open(marker.get('map'), marker);
+                    //     InforObj[0] = infowindow;
+                    // });
+                    // marker.addListener('mouseout', function () {
+                    //     closeOtherInfo();
+                    //     infowindow.close();
+                    //     InforObj[0] = infowindow;
+                    // });
+                }
+            }
+
+            function closeOtherInfo() {
+                if (InforObj.length > 0) {
+                    /* detach the info-window from the marker ... undocumented in the API docs */
+                    InforObj[0].set("marker", null);
+                    /* and close it */
+                    InforObj[0].close();
+                    /* blank the array */
+                    InforObj.length = 0;
+                }
+            }
+
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 4,
+                    center: centerCords
+                });
+                addMarkerInfo();
+            }
+        </script>
+    </head>
+
+    <body>
+        <h3>My Google Maps Demo</h3>
+        <!--The div element for the map -->
+        <div id="map"></div>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
+
+    </body>
+
+    </html>
+<!-- Code referred from: https://stackoverflow.com/questions/3059044/google-maps-js-api-v3-simple-multiple-marker-example-->
