@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Dublin Bikes</title>
+  <meta charset="UTF-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <style>
+    #map {
+      height: 700px;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+    // URL for APIs
+    const API_URL = "http://127.0.0.1:5000";
+    var static_bikes_details = [];
+
+    // Map variables
+    var markersOnMap = [];
+    var map;
+    var InforObj = [];
+    const centerCords = {
+      lat: 53.357841,
+      lng: -6.251557
+    };
+    var markersArray = [];
+
+    $(document).ready(function () {
+      loadStaticBikesData()
+    });
+
+    const loadStaticBikesData = () => {
+      // Getting static bikes data from server
+      $.ajax({
+        url: API_URL + "/api/station/bikes/static/all",
+        type: "GET",
+        success: function (response) {
+          let select_field = "<select id=\"stations\" onchange=\"selectLocationAndDisplayBikesInfo();\">";
+          select_field += "<option value=''>Select a location</option>"
+
+          // Iterating the response
+          response.forEach(function (element) {
+            static_bikes_details.push(element);
+
+            // Pushing values for select field
+            select_field += "<option value=" + element.number + ">" + element.name + "</option>";
+
+            // Pushing the co-ordinates in map
+            markersOnMap.push({
+              placeName: element.name,
+              LatLng: [{
+                lat: parseFloat(element.lat),
+                lng: parseFloat(element.lng)
+              }],
+              station_id: element.number
+            });
+          });
+          select_field += "</select>";
+
+          // Getting the div id
+          let bike_locations = $("#bike_locations")[0]
+
+          // Setting values
+          bike_locations.innerHTML = select_field;
+          bike_locations.style.display = "block";
+
+          // Initialize the map
+          initMap();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          console.log("Error in loadStaticBikesData()")
+          console.log(xhr.status);
+          console.log(thrownError);
+        }
+      });
+    }
+
+    const selectLocationAndDisplayBikesInfo = () => {
+      const station_id = $("#stations :selected").val();
+      const static_bike_markers = markersArray.find(predicate => predicate.station_id == station_id);
+      google.maps.event.trigger(map, "resize");
+      map.panTo(static_bike_markers.position);
+      map.setZoom(14);
+      closeOtherInfo();
+      const infowindow = new google.maps.InfoWindow({
+        content: 'station_id: ' + station_id
+      });
+      infowindow.open(map, static_bike_markers);
+      InforObj[0] = infowindow;
+    }
+  </script>
+
+  <script>
+    const addMarkerInfo = () => {
+      for (var i = 0; i < markersOnMap.length; i++) {
+        const marker = new google.maps.Marker({
+          position: markersOnMap[i].LatLng[0],
+          map: map,
+          animation: google.maps.Animation.DROP,
+          station_id: markersOnMap[i].station_id
+        });
+        marker.addListener('click', function () {
+          getBikesAvailabilityDetails(marker);
+        });
+        markersArray.push(marker);
+      }
+    }
+
+    const getBikesAvailabilityDetails = (marker) => {
+      closeOtherInfo();
+      const infowindow = new google.maps.InfoWindow({
+        content: 'station_id: ' + marker.get('station_id')
+      });
+      infowindow.open(marker.get('map'), marker);
+      InforObj[0] = infowindow;
+    }
+
+    const closeOtherInfo = () => {
+      if (InforObj.length > 0) {
+        InforObj[0].set("marker", null);
+        InforObj[0].close();
+        InforObj.length = 0;
+      }
+    }
+
+    const initMap = () => {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: centerCords
+      });
+      addMarkerInfo();
+    }
+  </script>
+
+</head>
+
+<body>
+  <h1 style="text-align: center"> Welcome to Dublin Bikes </h1><br />
+  Stations:<div id="bike_locations" style="display: none"></div>
+  <br />
+  <div id="map"></div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
+</body>
+
+</html>
