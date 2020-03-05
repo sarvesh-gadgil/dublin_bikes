@@ -80,16 +80,30 @@
 
     const selectLocationAndDisplayBikesInfo = () => {
       const station_id = $("#stations :selected").val();
-      const static_bike_markers = markersArray.find(predicate => predicate.station_id == station_id);
-      google.maps.event.trigger(map, "resize");
-      map.panTo(static_bike_markers.position);
-      map.setZoom(14);
-      closeOtherInfo();
-      const infowindow = new google.maps.InfoWindow({
-        content: 'station_id: ' + station_id
+
+      // Getting latest availability bikes data
+      $.ajax({
+        url: API_URL + "/api/station/bikes/get/" + station_id,
+        type: "GET",
+        success: function (response) {
+          const static_bike_markers = markersArray.find(predicate => predicate.station_id == station_id);
+          google.maps.event.trigger(map, "resize");
+          map.panTo(static_bike_markers.position);
+          map.setZoom(14);
+          closeOtherInfo();
+          const infowindow = new google.maps.InfoWindow({
+            content: 'Available Bike Stands: ' + response.available_bike_stands +
+              "<br/>Available Bikes: " + '' + response.available_bikes
+          });
+          infowindow.open(map, static_bike_markers);
+          InforObj[0] = infowindow;
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          console.log("Error in selectLocationAndDisplayBikesInfo()")
+          console.log(xhr.status);
+          console.log(thrownError);
+        }
       });
-      infowindow.open(map, static_bike_markers);
-      InforObj[0] = infowindow;
     }
   </script>
 
@@ -110,12 +124,25 @@
     }
 
     const getBikesAvailabilityDetails = (marker) => {
-      closeOtherInfo();
-      const infowindow = new google.maps.InfoWindow({
-        content: 'station_id: ' + marker.get('station_id')
+
+      $.ajax({
+        url: API_URL + "/api/station/bikes/get/" + marker.get('station_id'),
+        type: "GET",
+        success: function (response) {
+          closeOtherInfo();
+          const infowindow = new google.maps.InfoWindow({
+            content: 'Available Bike Stands: ' + response.available_bike_stands +
+              "<br/>Available Bikes: " + '' + response.available_bikes
+          });
+          infowindow.open(marker.get('map'), marker);
+          InforObj[0] = infowindow;
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          console.log("Error in getBikesAvailabilityDetails()")
+          console.log(xhr.status);
+          console.log(thrownError);
+        }
       });
-      infowindow.open(marker.get('map'), marker);
-      InforObj[0] = infowindow;
     }
 
     const closeOtherInfo = () => {
