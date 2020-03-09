@@ -90,13 +90,41 @@
           google.maps.event.trigger(map, "resize");
           map.panTo(static_bike_markers.position);
           map.setZoom(14);
-          closeOtherInfo();
+          closeAllOtherInfo();
           const infowindow = new google.maps.InfoWindow({
             content: 'Available Bike Stands: ' + response.available_bike_stands +
               "<br/>Available Bikes: " + '' + response.available_bikes
           });
           infowindow.open(map, static_bike_markers);
-          InforObj[0] = infowindow;
+          InforObj.push(infowindow);
+          const currentMarker = markersOnMap.find(predicate => predicate.station_id == station_id);
+          for (var i = 0; i < markersOnMap.length; i++) {
+            // if this location is within 1KM of the user, add it to the list
+            if (distance(currentMarker.LatLng[0].lat, currentMarker.LatLng[0].lng, markersOnMap[i]
+                .LatLng[0].lat, markersOnMap[i].LatLng[0].lng, "K") <= 0.3 && station_id != markersOnMap[i]
+              .station_id) {
+              const station_id = markersOnMap[i].station_id;
+              $.ajax({
+                url: API_URL + "/api/station/bikes/get/" + markersOnMap[i].station_id,
+                type: "GET",
+                success: function (response) {
+                  const infowindow = new google.maps.InfoWindow({
+                    content: 'Available Bike Stands: ' + response.available_bike_stands +
+                      "<br/>Available Bikes: " + '' + response.available_bikes
+                  });
+                  const suggestedStations = markersArray.find(predicate => predicate
+                    .station_id == station_id);
+                  infowindow.open(map, suggestedStations);
+                  InforObj.push(infowindow);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                  console.log("Error in selectLocationAndDisplayBikesInfo()")
+                  console.log(xhr.status);
+                  console.log(thrownError);
+                }
+              });
+            }
+          }
         },
         error: function (xhr, ajaxOptions, thrownError) {
           console.log("Error in selectLocationAndDisplayBikesInfo()")
@@ -104,6 +132,27 @@
           console.log(thrownError);
         }
       });
+    }
+    // Reference: https://stackoverflow.com/questions/51819224/how-to-find-nearest-location-using-latitude-and-longitude-from-a-json-data
+    const distance = (lat1, lon1, lat2, lon2, unit) => {
+      var radlat1 = Math.PI * lat1 / 180
+      var radlat2 = Math.PI * lat2 / 180
+      var theta = lon1 - lon2
+      var radtheta = Math.PI * theta / 180
+      var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+      if (dist > 1) {
+        dist = 1;
+      }
+      dist = Math.acos(dist)
+      dist = dist * 180 / Math.PI
+      dist = dist * 60 * 1.1515
+      if (unit == "K") {
+        dist = dist * 1.609344
+      }
+      if (unit == "N") {
+        dist = dist * 0.8684
+      }
+      return dist
     }
   </script>
 
@@ -129,13 +178,13 @@
         url: API_URL + "/api/station/bikes/get/" + marker.get('station_id'),
         type: "GET",
         success: function (response) {
-          closeOtherInfo();
+          closeAllOtherInfo();
           const infowindow = new google.maps.InfoWindow({
             content: 'Available Bike Stands: ' + response.available_bike_stands +
               "<br/>Available Bikes: " + '' + response.available_bikes
           });
           infowindow.open(marker.get('map'), marker);
-          InforObj[0] = infowindow;
+          InforObj.push(infowindow);
         },
         error: function (xhr, ajaxOptions, thrownError) {
           console.log("Error in getBikesAvailabilityDetails()")
@@ -150,6 +199,12 @@
         InforObj[0].set("marker", null);
         InforObj[0].close();
         InforObj.length = 0;
+      }
+    }
+
+    const closeAllOtherInfo = () => {
+      for (var i = 0; i < InforObj.length; i++) {
+        InforObj[i].close();
       }
     }
 
