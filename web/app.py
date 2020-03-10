@@ -1,7 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import dbconnect
 
 app = Flask(__name__)
+
+GOOGLE_MAPS_KEY = "AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"
 
 
 @app.route("/")
@@ -73,6 +75,47 @@ def get_all_static_bikes_data():
 
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
+        return "Error"
+
+
+@app.route("/api/google/get/places")
+def get_places_by_query():
+    try:
+        # Get response from Google
+        response = dbconnect.get_api_response("https://maps.googleapis.com/maps/api/place/autocomplete/json",
+                                              {'input': request.args.get("query"),
+                                               'key': GOOGLE_MAPS_KEY,
+                                               'location': '53.357841,-6.251557', 'radius': 2000})
+        # Create JSON response
+        payload = []
+        for result in response['predictions']:
+            content = {'value': result['description'], 'id': result['place_id']}
+            payload.append(content)
+
+        # Return response
+        return jsonify(payload)
+
+    except Exception as e:
+        print('Error in get_places_by_query:', e)
+        return "Error"
+
+
+@app.route("/api/google/get/place/coordinates")
+def get_place_coordinates():
+    try:
+        # Get response from Google
+        response = dbconnect.get_api_response("https://maps.googleapis.com/maps/api/place/details/json",
+                                              {'placeid': request.args.get("place_id"), 'key': GOOGLE_MAPS_KEY})
+
+        # Create JSON response
+        content = {'lat': response['result']['geometry']['location']['lat'],
+                   'lng': response['result']['geometry']['location']['lng']}
+
+        # Return response
+        return jsonify(content)
+
+    except Exception as e:
+        print('Error in get_place_coordinates:', e)
         return "Error"
 
 
