@@ -33,11 +33,19 @@ const getBikesAvailabilityDetails = (marker) => {
             closeAllOtherInfo();
             const infowindow = new google.maps.InfoWindow({
                 content: "Station Name: " + marker.get('placeName') +
-                  "<br/>Available Bike Stands: " + response.available_bike_stands +
-                  "<br/>Available Bikes: " + response.available_bikes
+                    "<br/>Available Bike Stands: " + response.available_bike_stands +
+                    "<br/>Available Bikes: " + response.available_bikes
             });
             infowindow.open(marker.get('map'), marker);
             InforObj.push(infowindow);
+
+            startStation = marker.get('station_id');
+
+            // Getting the div id
+            let to_from_info = $("#to_from_info")[0]
+
+            // Setting values
+            to_from_info.innerHTML = "Starting station: " + marker.get('placeName');
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log("Error in getBikesAvailabilityDetails()")
