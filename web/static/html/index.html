@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Dublin Bikes</title>
+  <meta charset="UTF-8">
+
+  <!-- For jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!-- For jquery ui autocomplete -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <!-- Custom JS code below -->
+  <script type="text/javascript" src="static/js/googlemaps.js"></script>
+  <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
+  <script type="text/javascript" src="static/js/startstationsearch.js"></script>
+
+  <style>
+    #map {
+      height: 700px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 style="text-align: center"> Welcome to Dublin Bikes </h1><br />
+  <!-- Stations:<div id="bike_locations" style="display: none"></div>
+  <br /> -->
+
+  <label>Start: </label>
+  <input id="start_location">
+  <br />
+  <div id="nearest_bike_locations" style="display: none"></div>
+  <br />
+  <br />
+  <div id="to_from_info"></div>
+  <br />
+  <br />
+  <div id="map"></div>
+
+  <!-- For Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
+</body>
+
+</html>
