@@ -38,7 +38,6 @@ def get_bike_data_by_station_id(station_id):
 
         # Returning response
         return jsonify(content)
-
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
         return "Error"
