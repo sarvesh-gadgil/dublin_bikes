@@ -16,7 +16,8 @@
   <!-- Custom JS code below -->
   <script type="text/javascript" src="static/js/googlemaps.js"></script>
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
-  <script type="text/javascript" src="static/js/startstationsearch.js"></script>
+  <script type="text/javascript" src="static/js/stationsearch.js"></script>
+<!--  <script type="text/javascript" src="static/js/destinationstationsearch.js"></script>-->
 
   <style>
     #map {
@@ -33,14 +34,22 @@
 
   <label>Start: </label>
   <input id="start_location">
+  <label>Destination: </label>
+  <input id="destination_location">
   <br />
   <div id="nearest_bike_locations" style="display: none"></div>
   <br />
   <br />
   <div id="to_from_info"></div>
+  <div id="start_location_name"></div>
+  <br>
+  <div id="destination_location_name"></div>
   <br />
   <br />
   <div id="map"></div>
+
+  <input type="hidden" id="selected_start_location">
+  <input type="hidden" id="selected_destination_location">
 
   <!-- For Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
