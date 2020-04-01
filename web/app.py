@@ -41,6 +41,11 @@ def get_bike_data_by_station_id(station_id):
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
         return "Error"
+    finally:
+        try:
+            connection.close()
+        except Exception as e:
+            print("Error in closing connection", e)
 
 
 @app.route("/api/station/bikes/static/all")
@@ -75,6 +80,11 @@ def get_all_static_bikes_data():
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
         return "Error"
+    finally:
+        try:
+            connection.close()
+        except Exception as e:
+            print("Error in closing connection", e)
 
 
 @app.route("/api/google/get/places")
@@ -91,6 +101,37 @@ def get_places_by_query():
             content = {'value': result['description'], 'id': result['place_id']}
             payload.append(content)
 
+        # Getting stations from database
+        # Connect to database
+        connection = dbconnect.get_db_connection()
+
+        try:
+            param = "%" + request.args.get("query") + "%"
+            sql = "SELECT number, name FROM static_bike_details where name like \"%s\"" % param
+            print(sql)
+
+            # Create cursor object
+            cursor = connection.cursor()
+
+            # Execute query
+            cursor.execute(sql)
+
+            # Getting all the records
+            rows = cursor.fetchall()
+
+            # Creating JSON response
+            for result in rows:
+                content = {'value': result[1] + " (This is a station)", 'id': 'local_from_db_' + str(result[0])}
+                payload.append(content)
+
+        except Exception as e:
+            print('Error in get_places_by_query:', e)
+        finally:
+            try:
+                connection.close()
+            except Exception as e:
+                print("Error in closing connection", e)
+
         # Return response
         return jsonify(payload)
 
@@ -102,13 +143,41 @@ def get_places_by_query():
 @app.route("/api/google/get/place/coordinates")
 def get_place_coordinates():
     try:
-        # Get response from Google
-        response = dbconnect.get_api_response("https://maps.googleapis.com/maps/api/place/details/json",
-                                              {'placeid': request.args.get("place_id"), 'key': GOOGLE_MAPS_KEY})
+        if "local_from_db_" in request.args.get("place_id"):
+            station_id = request.args.get("place_id").replace("local_from_db_", "")
 
-        # Create JSON response
-        content = {'lat': response['result']['geometry']['location']['lat'],
-                   'lng': response['result']['geometry']['location']['lng']}
+            # Connect to database
+            connection = dbconnect.get_db_connection()
+
+            sql = "SELECT a.name, b.available_bike_stands, b.available_bikes " \
+                  "FROM static_bike_details a, dynamic_bike_details b " \
+                  "where a.number = %d and a.number = b.number order by b.date_created desc limit 1" % int(station_id)
+
+            # Create cursor object
+            cursor = connection.cursor()
+
+            # Execute query
+            cursor.execute(sql)
+
+            # Getting all the records
+            rows = cursor.fetchall()
+            result = rows[0]
+
+            content = {'station_id': int(station_id), 'station_name': result[0], 'available_bike_stands': result[1],
+                       'available_bikes': result[2]}
+
+            try:
+                connection.close()
+            except Exception as e:
+                print("Error in closing connection", e)
+        else:
+            # Get response from Google
+            response = dbconnect.get_api_response("https://maps.googleapis.com/maps/api/place/details/json",
+                                                  {'placeid': request.args.get("place_id"), 'key': GOOGLE_MAPS_KEY})
+
+            # Create JSON response
+            content = {'lat': response['result']['geometry']['location']['lat'],
+                       'lng': response['result']['geometry']['location']['lng']}
 
         # Return response
         return jsonify(content)

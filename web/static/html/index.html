@@ -17,7 +17,11 @@
   <script type="text/javascript" src="static/js/googlemaps.js"></script>
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
   <script type="text/javascript" src="static/js/stationsearch.js"></script>
-<!--  <script type="text/javascript" src="static/js/destinationstationsearch.js"></script>-->
+  <script type="text/javascript" src="static/js/routes.js"></script>
+
+  <!-- Bootstrap links -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
   <style>
     #map {
@@ -40,16 +44,45 @@
   <div id="nearest_bike_locations" style="display: none"></div>
   <br />
   <br />
-  <div id="to_from_info"></div>
+  <!-- <div id="to_from_info"></div> -->
   <div id="start_location_name"></div>
   <br>
   <div id="destination_location_name"></div>
+  <br />
+  <br />
+  <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
   <br />
   <br />
   <div id="map"></div>
 
   <input type="hidden" id="selected_start_location">
   <input type="hidden" id="selected_destination_location">
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="sourceDestinationModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Choose a source or destination for this marker</h4>
+        </div>
+        <!-- <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div> -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal"
+            onclick="setStartStationViaOnclick()">Source</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal"
+            onclick="setEndStationViaOnclick()">Destination</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- For Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>

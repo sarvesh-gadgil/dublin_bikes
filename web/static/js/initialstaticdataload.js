@@ -3,7 +3,6 @@ const API_URL = "http://127.0.0.1:5000";
 const API_KEY = "AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY";
 var static_bikes_details = [];
 var markersOnMapCount = 0;
-var startStation = -1; // -1 means station has not been choosed
 
 $(document).ready(function () {
     loadStaticBikesData()
