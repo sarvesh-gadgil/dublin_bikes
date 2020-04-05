@@ -48,3 +48,5 @@ parameters used:
 <br>speed
 <br>sunrise
 <br>sunset
+
+Version of scikit-learn used: 0.23.1

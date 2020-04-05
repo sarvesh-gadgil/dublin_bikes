@@ -48,7 +48,8 @@ const decideSourceDestination = (marker) => {
 }
 
 const setStartStationViaOnclick = () => {
-    clearStartAndEndSearch();
+    // clearStartAndEndSearch();
+    $("#nearest_bike_locations")[0].innerText = "";
     // Remove old routes
     removeRoute();
     const marker = globalMarker;
@@ -59,8 +60,9 @@ const setStartStationViaOnclick = () => {
     isStartStation = true;
     setStartSelectMarker(marker);
     setStart(marker.get('station_id'));
-    let starting_location_text = $("#start_location_name")[0];
-    starting_location_text.innerHTML = "Starting station: " + marker.get('placeName');
+    // let starting_location_text = $("#start_location_name")[0];
+    // starting_location_text.innerHTML = "Starting station: " + marker.get('placeName');
+    $("#start_location")[0].value = marker.get('placeName');
     startStation = marker.get('station_id');
     getBikesAvailabilityDetails();
     if (startStation != -1 && destinationStation != -1) {
@@ -69,7 +71,8 @@ const setStartStationViaOnclick = () => {
 }
 
 const setEndStationViaOnclick = () => {
-    clearStartAndEndSearch();
+    // clearStartAndEndSearch();
+    $("#nearest_bike_locations")[0].innerText = "";
     // Remove old routes
     removeRoute();
     const marker = globalMarker;
@@ -80,8 +83,9 @@ const setEndStationViaOnclick = () => {
     isStartStation = false;
     setEndSelectMarker(marker);
     setDestination(marker.get('station_id'));
-    let destination_location_text = $("#destination_location_name")[0];
-    destination_location_text.innerHTML = "Destination station: " + marker.get('placeName');
+    // let destination_location_text = $("#destination_location_name")[0];
+    // destination_location_text.innerHTML = "Destination station: " + marker.get('placeName');
+    $("#destination_location")[0].value = marker.get('placeName');
     destinationStation = marker.get('station_id');
     getBikesAvailabilityDetails();
     if (startStation != -1 && destinationStation != -1) {
@@ -91,25 +95,31 @@ const setEndStationViaOnclick = () => {
 
 const getBikesAvailabilityDetails = () => {
     const marker = globalMarker;
-    $.ajax({
-        url: API_URL + "/api/station/bikes/get/" + marker.get('station_id'),
-        type: "GET",
-        success: function (response) {
-            closeAllOtherInfo();
-            const infowindow = new google.maps.InfoWindow({
-                content: "Station Name: " + marker.get('placeName') +
-                    "<br/>Available Bike Stands: " + response.available_bike_stands +
-                    "<br/>Available Bikes: " + response.available_bikes
-            });
-            infowindow.open(marker.get('map'), marker);
-            InforObj.push(infowindow);
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            console.log("Error in getBikesAvailabilityDetails()")
-            console.log(xhr.status);
-            console.log(thrownError);
-        }
+    closeAllOtherInfo();
+    const infowindow = new google.maps.InfoWindow({
+        content: "Station Name: " + marker.get('placeName')
     });
+    infowindow.open(marker.get('map'), marker);
+    InforObj.push(infowindow);
+    // $.ajax({
+    //     url: API_URL + "/api/station/bikes/get/" + marker.get('station_id'),
+    //     type: "GET",
+    //     success: function (response) {
+    //         closeAllOtherInfo();
+    //         const infowindow = new google.maps.InfoWindow({
+    //             content: "Station Name: " + marker.get('placeName')
+    //             // + "<br/>Available Bike Stands: " + response.available_bike_stands +
+    //             //     "<br/>Available Bikes: " + response.available_bikes
+    //         });
+    //         infowindow.open(marker.get('map'), marker);
+    //         InforObj.push(infowindow);
+    //     },
+    //     error: function (xhr, ajaxOptions, thrownError) {
+    //         console.log("Error in getBikesAvailabilityDetails()")
+    //         console.log(xhr.status);
+    //         console.log(thrownError);
+    //     }
+    // });
 }
 
 const closeOtherInfo = () => {

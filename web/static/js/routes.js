@@ -1,20 +1,23 @@
 var directionsRenderer;
 
 const getSourceAndDestinationCoordinates = () => {
+    const startDate = $("#start_datetime_picker")[0].value.trim();
     if (startStation == -1) {
         alert('Please select a start station');
     } else if (destinationStation == -1) {
         alert('Please select a destination station');
+    } else if (startDate == "") {
+        alert('Please select a start date');
     } else {
         const sourceLatLng = markersOnMap.find(predicate => predicate
             .station_id == startStation).LatLng;
         const destinationLatLng = markersOnMap.find(predicate => predicate
             .station_id == destinationStation).LatLng;
-        showRoute(sourceLatLng, destinationLatLng);
+        showRoute(sourceLatLng, destinationLatLng, startDate);
     }
 }
 
-const showRoute = (sourceLatLng, destinationLatLng) => {
+const showRoute = (sourceLatLng, destinationLatLng, startDate) => {
     closeAllOtherInfo();
 
     // Remove old routes
@@ -30,7 +33,7 @@ const showRoute = (sourceLatLng, destinationLatLng) => {
         destination: destination,
         travelMode: "BICYCLING",
         drivingOptions: {
-            departureTime: new Date(Date.now()), // for the time N milliseconds from now.
+            departureTime: new Date(startDate),
             trafficModel: 'optimistic'
         }
     };
@@ -46,8 +49,7 @@ const showRoute = (sourceLatLng, destinationLatLng) => {
             });
             directionsRenderer.setDirections(response);
             directionsRenderer.setMap(map);
-            alert(response.routes[0].legs[0].distance.text)
-            alert(response.routes[0].legs[0].duration.text)
+            getBikeAndWeatherPrediction(response.routes[0].legs[0].distance.text, response.routes[0].legs[0].duration.text, startDate);
         }
     });
 }
@@ -57,4 +59,35 @@ const removeRoute = () => {
         directionsRenderer.setMap(null);
         directionsRenderer = null;
     }
+}
+
+const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
+    $("#route_info")[0].innerHTML = "";
+    $("#show_hide_loader")[0].style.display = "block";
+    let predictionInfo = "Distance: " + distance + "<br/>" + "Duration: " + duration + "<br/><br/>";
+    $.ajax({
+        url: API_URL + "/api/station/predict?startDate=" + startDate + "&startStation=" + startStation + "&destinationStation=" + destinationStation,
+        type: "GET",
+        success: function (response) {
+            predictionInfo += "=========Weather Description=======<br/>";
+            predictionInfo += "Weather Description: " + response.weather_description_prediction + "<br/>";
+            predictionInfo += "Temperature: " + response.temperature_prediction + "<br/>";
+            predictionInfo += "Feels Like: " + response.feels_like_prediction + "<br/>";
+            predictionInfo += "Max Temperature: " + response.temp_max_prediction + "<br/>";
+            predictionInfo += "Min Temperature: " + response.temp_min_prediction + "<br/><br/>";
+            predictionInfo += "=========Start Station Info=======<br/>";
+            predictionInfo += "Available Bikes: " + response.start_station_bikes_prediction + "<br/>";
+            predictionInfo += "Available Bike Stands: " + response.start_station_bike_stands_prediction + "<br/><br/>";
+            predictionInfo += "=========Destination Station Info=======<br/>";
+            predictionInfo += "Available Bikes: " + response.destination_station_bikes_prediction + "<br/>";
+            predictionInfo += "Available Bike Stands: " + response.destination_station_bike_stands_prediction + "<br/><br/>";
+            $("#show_hide_loader")[0].style.display = "none";
+            $("#route_info")[0].innerHTML = predictionInfo;
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log("Error in getBikeAndWeatherPrediction()")
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
 }

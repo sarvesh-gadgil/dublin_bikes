@@ -1,9 +1,37 @@
 from flask import Flask, jsonify, request
+from datetime import datetime
+import calendar
+import pickle
 import dbconnect
 
 app = Flask(__name__)
 
 GOOGLE_MAPS_KEY = "AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"
+
+DAY_NAME_ONE_HOT_ENCODED = {"Monday": [1, 0, 0, 0, 0, 0], "Tuesday": [0, 0, 0, 0, 1, 0],
+                            "Wednesday": [0, 0, 0, 0, 0, 1],
+                            "Thursday": [0, 0, 0, 1, 0, 0], "Friday": [0, 0, 0, 0, 0, 0],
+                            "Saturday": [0, 1, 0, 0, 0, 0],
+                            "Sunday": [0, 0, 1, 0, 0, 0]}
+
+DAY_NAME_ENCODED = {"Monday": 1, "Tuesday": 5, "Wednesday": 6, "Thursday": 4, "Friday": 0, "Saturday": 2, "Sunday": 3}
+TIME_OF_DAY_ENCODED = {"Afternoon": 0, "Night": 2, "Morning": 1}
+WEATHER_DESCRIPTION_ENCODED = {9: "scattered clouds", 2: "few clouds", 0: "broken clouds", 6: "light rain",
+                               5: "light intensity shower rain", 7: "moderate rain", 8: "overcast clouds",
+                               10: "shower rain", 3: "light intensity drizzle", 1: "drizzle",
+                               4: "light intensity drizzle rain"}
+
+WEATHER_DESCRIPTION_ONE_HOT_ENCODED = {"drizzle": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                       "few clouds": [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                                       "light intensity drizzle": [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                                       "light intensity drizzle rain": [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                                       "light intensity shower rain": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                                       "light rain": [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                                       "moderate rain": [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                                       "overcast clouds": [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                       "scattered clouds": [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                                       "shower rain": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                                       "broken clouds": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
 
 
 @app.route("/")
@@ -108,7 +136,6 @@ def get_places_by_query():
         try:
             param = "%" + request.args.get("query") + "%"
             sql = "SELECT number, name FROM static_bike_details where name like \"%s\"" % param
-            print(sql)
 
             # Create cursor object
             cursor = connection.cursor()
@@ -185,6 +212,111 @@ def get_place_coordinates():
     except Exception as e:
         print('Error in get_place_coordinates:', e)
         return "Error"
+
+
+@app.route("/api/station/predict")
+def get_bike_and_weather_prediction():
+    try:
+        start_date = datetime.strptime(request.args.get("startDate"), "%d/%m/%Y %H:%M")
+        start_station = request.args.get("startStation")
+        destination_station = request.args.get("destinationStation")
+        print("Start date in date type is:", start_date)
+        print(calendar.day_name[start_date.weekday()])
+
+        time_of_day_dict = get_time_of_day(start_date.hour)
+
+        # Predict temperature
+        model = load_ml_model('ml_model/weather/temperature.pkl')
+        x_features = [start_date.day, start_date.month, start_date.hour, start_date.minute]
+        x_features += time_of_day_dict['time_of_day_for_prediction']
+        x_features += DAY_NAME_ONE_HOT_ENCODED[calendar.day_name[start_date.weekday()]]
+        temperature_prediction = model.predict([x_features])[0]
+        print("temperature_prediction:", temperature_prediction)
+
+        # Predict feels like
+        model = load_ml_model('ml_model/weather/feels_like.pkl')
+        feels_like_prediction = model.predict([x_features])[0]
+        print("feels_like_prediction:", feels_like_prediction)
+
+        # Predict temp max
+        model = load_ml_model('ml_model/weather/temp_max.pkl')
+        temp_max_prediction = model.predict([x_features])[0]
+        print("temp_max_prediction:", temp_max_prediction)
+
+        # Predict temp min
+        model = load_ml_model('ml_model/weather/temp_min.pkl')
+        temp_min_prediction = model.predict([x_features])[0]
+        print("temp_min_prediction:", temp_min_prediction)
+
+        # Predict weather description
+        x_features = [start_date.day, start_date.month, start_date.hour, start_date.minute,
+                      DAY_NAME_ENCODED[calendar.day_name[start_date.weekday()]],
+                      TIME_OF_DAY_ENCODED[time_of_day_dict['time_of_day']]]
+        model = load_ml_model('ml_model/weather/weather_description.pkl')
+        weather_description_prediction = WEATHER_DESCRIPTION_ENCODED[model.predict([x_features])[0]]
+        print("weather_description_prediction:", weather_description_prediction)
+
+        # Create input features for prediction (available bikes and available bikes stands)
+        x_features = [start_date.day, start_date.month, start_date.hour, start_date.minute]
+        x_features += time_of_day_dict['time_of_day_for_prediction']
+        x_features += DAY_NAME_ONE_HOT_ENCODED[calendar.day_name[start_date.weekday()]]
+        x_features.append(int(round(temperature_prediction)))
+        x_features += WEATHER_DESCRIPTION_ONE_HOT_ENCODED[weather_description_prediction]
+
+        # Predict available bikes for start station
+        model = load_ml_model('ml_model/available_bikes/available_bikes_' + str(start_station) + ".pkl")
+        start_station_bikes_prediction = model.predict([x_features])[0]
+        print("start_station_bikes_prediction", start_station_bikes_prediction)
+
+        # Predict available bike stands for start station
+        model = load_ml_model('ml_model/available_bike_stands/available_bike_stands_' + str(start_station) + ".pkl")
+        start_station_bike_stands_prediction = model.predict([x_features])[0]
+        print("start_station_bike_stands_prediction", start_station_bike_stands_prediction)
+
+        # Predict available bikes for destination station
+        model = load_ml_model('ml_model/available_bikes/available_bikes_' + str(destination_station) + ".pkl")
+        destination_station_bikes_prediction = model.predict([x_features])[0]
+        print("destination_station_bikes_prediction", destination_station_bikes_prediction)
+
+        # Predict available bike stands for destination station
+        model = load_ml_model(
+            'ml_model/available_bike_stands/available_bike_stands_' + str(destination_station) + ".pkl")
+        destination_station_bike_stands_prediction = model.predict([x_features])[0]
+        print("destination_station_bike_stands_prediction", destination_station_bike_stands_prediction)
+
+        # Create JSON response
+        content = {"temperature_prediction": int(round(temperature_prediction)),
+                   "feels_like_prediction": int(round(feels_like_prediction)),
+                   "temp_max_prediction": int(round(temp_max_prediction)),
+                   "temp_min_prediction": int(round(temp_min_prediction)),
+                   "weather_description_prediction": weather_description_prediction,
+                   "start_station_bikes_prediction": int(round(start_station_bikes_prediction)),
+                   "start_station_bike_stands_prediction": int(round(start_station_bike_stands_prediction)),
+                   "destination_station_bikes_prediction": int(round(destination_station_bikes_prediction)),
+                   "destination_station_bike_stands_prediction": int(round(destination_station_bike_stands_prediction))}
+
+        # Return response
+        return jsonify(content)
+    except Exception as e:
+        print("Error in get_bike_and_weather_prediction: ", e)
+        return "Error"
+
+
+def load_ml_model(path):
+    with open(path, 'rb') as handle:
+        model = pickle.load(handle)
+    return model
+
+
+def get_time_of_day(hours):
+    if 0 <= hours <= 3:
+        return {'time_of_day_for_prediction': [0, 1], 'time_of_day': "Night"}
+    elif 4 <= hours <= 11:
+        return {'time_of_day_for_prediction': [1, 0], 'time_of_day': "Morning"}
+    elif 12 <= hours <= 20:
+        return {'time_of_day_for_prediction': [0, 0], 'time_of_day': "Afternoon"}
+    else:
+        return {'time_of_day_for_prediction': [0, 1], 'time_of_day': "Night"}
 
 
 if __name__ == "__main__":
