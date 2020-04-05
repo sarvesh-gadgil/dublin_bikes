@@ -13,20 +13,65 @@
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+  <!-- Bootstrap links -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <!-- Bootstrap datetime picker links -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js">
+  </script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
   <!-- Custom JS code below -->
   <script type="text/javascript" src="static/js/googlemaps.js"></script>
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
   <script type="text/javascript" src="static/js/stationsearch.js"></script>
   <script type="text/javascript" src="static/js/routes.js"></script>
 
-  <!-- Bootstrap links -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
   <style>
     #map {
       height: 700px;
       width: 100%;
+    }
+  </style>
+  <style>
+    /* Loader reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader */
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #3498db;
+      width: 60px;
+      height: 60px;
+      -webkit-animation: spin 2s linear infinite;
+      /* Safari */
+      animation: spin 2s linear infinite;
+      display: none;
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
@@ -40,17 +85,35 @@
   <input id="start_location">
   <label>Destination: </label>
   <input id="destination_location">
+  <div class="container">
+    <div class="row">
+      <div class='col-sm-2'>
+        Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
+      </div>
+      <script type="text/javascript">
+        $(function () {
+          $('#start_datetime_picker').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+          })
+        });
+      </script>
+    </div>
+  </div>
   <br />
   <div id="nearest_bike_locations" style="display: none"></div>
-  <br />
-  <br />
+  <!-- <br />
+  <br /> -->
   <!-- <div id="to_from_info"></div> -->
-  <div id="start_location_name"></div>
+  <!-- <div id="start_location_name"></div>
   <br>
   <div id="destination_location_name"></div>
   <br />
-  <br />
+  <br /> -->
   <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
+  <br />
+  <br />
+  <div class="loader" id="show_hide_loader"></div>
+  <div id="route_info"></div>
   <br />
   <br />
   <div id="map"></div>
