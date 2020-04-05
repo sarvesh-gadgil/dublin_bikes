@@ -18,11 +18,13 @@
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
   <script type="text/javascript" src="static/js/stationsearch.js"></script>
   <script type="text/javascript" src="static/js/routes.js"></script>
+  <script type="text/javascript" src="static/js/stationdatetimechart.js"></script>
 
   <!-- Bootstrap links -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
   <style>
     #map {
       height: 700px;
@@ -51,8 +53,17 @@
   <br />
   <br />
   <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
+  <button type="button" onclick="openDateTimeWiseChart()">Show More</button>
   <br />
   <br />
+  <div style="width:600px;height:300px;display:inline-block;padding-left:20px ">
+    <label>Data distribution for source location</label>
+    <canvas id="myChart1" width="800px" height="300px"></canvas>
+  </div>
+  <div style="width:600px;height:300px;display:inline-block;padding-left:20px">
+    <label>Data distribution for destination location</label>
+    <canvas id="myChart2" width="800px" height="300px"></canvas>
+  </div>
   <div id="map"></div>
 
   <input type="hidden" id="selected_start_location">
