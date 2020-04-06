@@ -24,8 +24,8 @@ const populateTimings = (response) => {
     var respObject = response;
     var startctx = document.getElementById("myChart1").getContext('2d');
     var endctx = document.getElementById("myChart2").getContext('2d');
-    var startdataValues = [respObject.start.SUNDAY.total?respObject.start.SUNDAY.total:0, respObject.start.MONDAY.total, respObject.start.TUESDAY.total, respObject.start.WEDNESDAY.total, respObject.start.THURSDAY.total, respObject.start.FRIDAY.total, respObject.start.SATURDAY.total, ];
-    var enddataValues = [respObject.end.SUNDAY.total, respObject.end.MONDAY.total, respObject.end.TUESDAY.total, respObject.end.WEDNESDAY.total, respObject.end.THURSDAY.total, respObject.end.FRIDAY.total, respObject.end.SATURDAY.total, ];
+    var startdataValues = [respObject.start.SUNDAY?respObject.start.SUNDAY.total:0, respObject.start.MONDAY?respObject.start.MONDAY.total:0, respObject.start.TUESDAY?respObject.start.TUESDAY.total:0,respObject.start.WEDNESDAY? respObject.start.WEDNESDAY.total:0, respObject.start.THURSDAY?respObject.start.THURSDAY.total:0,respObject.start.FRIDAY? respObject.start.FRIDAY.total:0,respObject.start.SATURDAY? respObject.start.SATURDAY.total:0 ];
+    var enddataValues = [respObject.end.SUNDAY?respObject.end.SUNDAY.total:0, respObject.end.MONDAY?respObject.end.MONDAY.total:0, respObject.end.TUESDAY?respObject.end.TUESDAY.total:0,respObject.end.WEDNESDAY? respObject.end.WEDNESDAY.total:0, respObject.end.THURSDAY?respObject.end.THURSDAY.total:0,respObject.end.FRIDAY? respObject.end.FRIDAY.total:0,respObject.end.SATURDAY? respObject.end.SATURDAY.total:0 ];
     var dataLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 
