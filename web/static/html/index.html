@@ -32,6 +32,7 @@
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
   <script type="text/javascript" src="static/js/stationsearch.js"></script>
   <script type="text/javascript" src="static/js/routes.js"></script>
+  <link rel="stylesheet" href="static/css/weather.css">
 
   <style>
     #map {
@@ -114,6 +115,54 @@
   <br />
   <div class="loader" id="show_hide_loader"></div>
   <div id="route_info"></div>
+  <div class="col-sm-10 col-sm-offset-4">
+    <div class="panel panel-default" style="width: 20%; box-shadow: 2px 4px 5px lightgray;">
+      <div class="panel-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-4">
+              <span style="font-weight: bolder; font-size: 30px;text-align: center">7°C</span><br />
+              <span style="font-size: 15px;text-align: center">Mostly Cloudy</span>
+            </div>
+            <div class="col-sm-4" style="text-align: right">
+              <!-- <div class="icon cloudy">
+                <div class="cloud"></div>
+                <div class="cloud"></div>
+              </div> -->
+              <!-- <div class="icon sun-shower">
+              <div class="cloud"></div>
+              <div class="sun">
+                <div class="rays"></div>
+              </div>
+              <div class="rain"></div>
+            </div> -->
+              <div class="icon rainy">
+                <div class="cloud"></div>
+                <div class="rain"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-hover">
+          <tbody style="text-align: justify">
+            <tr>
+              <td>Feels Like</td>
+              <td>3°C</td>
+            </tr>
+            <tr>
+              <td>Max</td>
+              <td>8°C</td>
+            </tr>
+            <tr>
+              <td>Min</td>
+              <td>2°C</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <br />
   <br />
   <div id="map"></div>
