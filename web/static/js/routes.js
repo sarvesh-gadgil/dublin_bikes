@@ -62,19 +62,52 @@ const removeRoute = () => {
 }
 
 const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
-    $("#route_info")[0].innerHTML = "";
+    clearAllRouteInfo();
+    const degreeCelcius = "°C";
     $("#show_hide_loader")[0].style.display = "block";
     let predictionInfo = "Distance: " + distance + "<br/>" + "Duration: " + duration + "<br/><br/>";
     $.ajax({
         url: API_URL + "/api/station/predict?startDate=" + startDate + "&startStation=" + startStation + "&destinationStation=" + destinationStation,
         type: "GET",
         success: function (response) {
-            predictionInfo += "=========Weather Description=======<br/>";
-            predictionInfo += "Weather Description: " + response.weather_description_prediction + "<br/>";
-            predictionInfo += "Temperature: " + response.temperature_prediction + "<br/>";
-            predictionInfo += "Feels Like: " + response.feels_like_prediction + "<br/>";
-            predictionInfo += "Max Temperature: " + response.temp_max_prediction + "<br/>";
-            predictionInfo += "Min Temperature: " + response.temp_min_prediction + "<br/><br/>";
+            let weather_description = null;
+            switch (response.weather_description_prediction) {
+                case "scattered clouds":
+                case "broken clouds":
+                    weather_description = "Partly Cloudy";
+                    $("#div_cloudy")[0].style.display = "block";
+                    break;
+                case "few clouds":
+                case "overcast clouds":
+                    weather_description = "Mostly Cloudy";
+                    $("#div_cloudy")[0].style.display = "block";
+                    break;
+                case "light intensity drizzle":
+                case "drizzle":
+                case "light intensity drizzle rain":
+                    weather_description = "Drizzle";
+                    $("#div_drizzle")[0].style.display = "block";
+                    break;
+                case "moderate rain":
+                case "shower rain":
+                case "light rain":
+                case "light intensity shower rain":
+                    weather_description = "Rainy";
+                    $("#div_high_rain")[0].style.display = "block";
+                    break;
+            }
+            $("#weather_desc")[0].innerText = weather_description;
+            $("#temperature")[0].innerText = response.temperature_prediction + degreeCelcius;
+            $("#feels_like")[0].innerText = response.feels_like_prediction + degreeCelcius;
+            $("#max_temp")[0].innerText = response.temp_max_prediction + degreeCelcius;
+            $("#min_temp")[0].innerText = response.temp_min_prediction + degreeCelcius;
+
+            // predictionInfo += "=========Weather Description=======<br/>";
+            // predictionInfo += "Weather Description: " + response.weather_description_prediction + "<br/>";
+            // predictionInfo += "Temperature: " + response.temperature_prediction + "<br/>";
+            // predictionInfo += "Feels Like: " + response.feels_like_prediction + "<br/>";
+            // predictionInfo += "Max Temperature: " + response.temp_max_prediction + "<br/>";
+            // predictionInfo += "Min Temperature: " + response.temp_min_prediction + "<br/><br/>";
             predictionInfo += "=========Start Station Info=======<br/>";
             predictionInfo += "Available Bikes: " + response.start_station_bikes_prediction + "<br/>";
             predictionInfo += "Available Bike Stands: " + response.start_station_bike_stands_prediction + "<br/><br/>";
@@ -83,6 +116,7 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             predictionInfo += "Available Bike Stands: " + response.destination_station_bike_stands_prediction + "<br/><br/>";
             $("#show_hide_loader")[0].style.display = "none";
             $("#route_info")[0].innerHTML = predictionInfo;
+            $("#weather_div")[0].style.display = "block";
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log("Error in getBikeAndWeatherPrediction()")
@@ -90,4 +124,12 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             console.log(thrownError);
         }
     });
+}
+
+const clearAllRouteInfo = () => {
+    $("#route_info")[0].innerHTML = "";
+    $("#weather_div")[0].style.display = "none";
+    $("#div_cloudy")[0].style.display = "none";
+    $("#div_drizzle")[0].style.display = "none";
+    $("#div_high_rain")[0].style.display = "none";
 }
