@@ -4,11 +4,17 @@
      DESTINATION: "destination"
  };
 
+ //  const start_location_table =
+ //      "<h2>Choose starting station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
+
+ //  const destination_location_table =
+ //      "<h2>Choose destination station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
+
  const start_location_table =
-     "<h2>Choose starting station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
+     "<h4>Choose starting station from below:</h4><div class=\"list-group\" style=\"width: 300px; text-align: center; font-size: small\">";
 
  const destination_location_table =
-     "<h2>Choose destination station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
+     "<h4>Choose destination station from below:</h4><div class=\"list-group\" style=\"width: 300px; text-align: center; font-size: small\">";
 
  $(function () {
      $("#start_location").autocomplete({
@@ -140,7 +146,8 @@
              infowindow.open(map, suggestedStations);
              InforObj.push(infowindow);
              // Creating link
-             let link = "<a href='#!' onclick='";
+             //  let link = "<a href='#!' onclick='";
+             let link = "<a href='#!' class=\"list-group-item\" onclick='";
              if (locType == LOCATION.SOURCE) {
                  link += "chooseStartLocation";
              } else {
@@ -148,8 +155,8 @@
              }
              const stationReplaced = station_name.replace("'", "###");
              link += "(" + station_id + ",\"" + stationReplaced + "\")'>" + station_name + "</a>";
-             tableDetails += "<tr><td>" + link + "</td></tr>";
-
+             //  tableDetails += "<tr><td>" + link + "</td></tr>";
+             tableDetails += link;
              //  $.ajax({
              //      url: API_URL + "/api/station/bikes/get/" + markersOnMap[i].station_id,
              //      type: "GET",
@@ -202,12 +209,14 @@
      if (!isDataPresent) {
          //  // Getting the div id
          //  let nearest_bike_locations = $("#nearest_bike_locations")[0]
-
+         "<div class=\"alert alert-danger\"><strong>Danger!</strong> Oops. There are <strong>no stations</strong> found near this location</div>"
          // Setting values
-         nearest_bike_locations.innerHTML = "<br/>No Stations Found";
+         //  nearest_bike_locations.innerHTML = "<br/>No Stations Found";
+         nearest_bike_locations.innerHTML = "<div class=\"alert alert-danger\" style=\"width: 400px; text-align: center\">Oops. There are <strong>no stations</strong> found near this location.</div>";
          nearest_bike_locations.style.display = "block";
      } else {
-         tableDetails += "</table>"
+         //  tableDetails += "</table>"
+         tableDetails += "</div>"
          // Setting values
          nearest_bike_locations.innerHTML = tableDetails;
          nearest_bike_locations.style.display = "block";

@@ -72,22 +72,26 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
         type: "GET",
         success: function (response) {
             let weather_description = null;
+            let warning_message = null;
             switch (response.weather_description_prediction) {
                 case "scattered clouds":
                 case "broken clouds":
                     weather_description = "Partly Cloudy";
                     $("#div_cloudy")[0].style.display = "block";
+                    warning_message = "<div class=\"alert alert-info\" style=\"width: inherit; text-align: center; font-size:small\">Seems like a good day to go out and enjoy!</div>";
                     break;
                 case "few clouds":
                 case "overcast clouds":
                     weather_description = "Mostly Cloudy";
                     $("#div_cloudy")[0].style.display = "block";
+                    warning_message = "<div class=\"alert alert-info\" style=\"width: inherit; text-align: center; font-size:small\">It's a gloomy day. So have some refreshing beverage before you leave!</div>";
                     break;
                 case "light intensity drizzle":
                 case "drizzle":
                 case "light intensity drizzle rain":
                     weather_description = "Drizzle";
                     $("#div_drizzle")[0].style.display = "block";
+                    warning_message = "<div class=\"alert alert-warning\" style=\"width: inherit; text-align: center; font-size:small\">Watch out for rain and carry an umbrella with you!</div>";
                     break;
                 case "moderate rain":
                 case "shower rain":
@@ -95,6 +99,7 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
                 case "light intensity shower rain":
                     weather_description = "Rainy";
                     $("#div_high_rain")[0].style.display = "block";
+                    warning_message = "<div class=\"alert alert-danger\" style=\"width: inherit; text-align: center; font-size:small\">Looks like it's going be a rainy day, so carry an umbrella with you!</div>";
                     break;
             }
             $("#weather_desc")[0].innerText = weather_description;
@@ -102,6 +107,7 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             $("#feels_like")[0].innerText = response.feels_like_prediction + degreeCelcius;
             $("#max_temp")[0].innerText = response.temp_max_prediction + degreeCelcius;
             $("#min_temp")[0].innerText = response.temp_min_prediction + degreeCelcius;
+            $("#warning_message")[0].innerHTML = warning_message;
 
             // predictionInfo += "=========Weather Description=======<br/>";
             // predictionInfo += "Weather Description: " + response.weather_description_prediction + "<br/>";
