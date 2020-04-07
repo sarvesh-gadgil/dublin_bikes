@@ -40,6 +40,9 @@ const addMarkerInfo = () => {
         });
         markersArray.push(marker);
     }
+    const control = document.getElementById('legend');
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(control);
+    control.style.display = 'block';
 }
 
 const decideSourceDestination = (marker) => {

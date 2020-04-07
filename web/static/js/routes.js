@@ -65,7 +65,8 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
     clearAllRouteInfo();
     const degreeCelcius = "°C";
     $("#show_hide_loader")[0].style.display = "block";
-    let predictionInfo = "Distance: " + distance + "<br/>" + "Duration: " + duration + "<br/><br/>";
+    // let predictionInfo = "Distance: " + distance + "<br/>" + "Duration: " + duration + "<br/><br/>";
+    let predictionInfo = "";
     $.ajax({
         url: API_URL + "/api/station/predict?startDate=" + startDate + "&startStation=" + startStation + "&destinationStation=" + destinationStation,
         type: "GET",
@@ -114,6 +115,14 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             predictionInfo += "=========Destination Station Info=======<br/>";
             predictionInfo += "Available Bikes: " + response.destination_station_bikes_prediction + "<br/>";
             predictionInfo += "Available Bike Stands: " + response.destination_station_bike_stands_prediction + "<br/><br/>";
+
+            // Setting distance and duration
+            $("#distance")[0].innerText = distance;
+            $("#duration")[0].innerText = duration;
+            const control = document.getElementById('floating-panel');
+            control.style.display = 'block';
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+
             $("#show_hide_loader")[0].style.display = "none";
             $("#route_info")[0].innerHTML = predictionInfo;
             $("#weather_div")[0].style.display = "block";
@@ -132,4 +141,5 @@ const clearAllRouteInfo = () => {
     $("#div_cloudy")[0].style.display = "none";
     $("#div_drizzle")[0].style.display = "none";
     $("#div_high_rain")[0].style.display = "none";
+    $("#floating-panel")[0].style.display = "none";
 }

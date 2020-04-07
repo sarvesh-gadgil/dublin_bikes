@@ -74,6 +74,44 @@
         transform: rotate(360deg);
       }
     }
+
+    #floating-panel {
+      position: absolute;
+      top: 10px;
+      left: 25%;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+      text-align: center;
+      line-height: 30px;
+      padding-left: 10px;
+      background: #fff;
+      padding: 5px;
+      font-size: 14px;
+      font-family: Arial;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+      display: none;
+    }
+
+    #legend {
+      position: absolute;
+      right: 10px;
+      bottom: 2%;
+      background-color: #fff;
+      padding: 1px;
+      border: 1px solid #999;
+      text-align: center;
+      line-height: 30px;
+      padding-left: 5px;
+      background: #fff;
+      font-size: 14px;
+      font-family: Arial;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+      display: none;
+    }
   </style>
 </head>
 
@@ -166,6 +204,31 @@
   <div id="route_info"></div>
   <br />
   <br />
+  <div id="floating-panel">
+    Distance: <span id="distance" style="font-weight: bolder"></span><br />
+    Duration: <span id="duration" style="font-weight: bolder"></span>
+  </div>
+
+  <div id="legend">
+    <span style="text-align: center; font-weight: bolder; font-size: larger">Legend</span><br />
+    <table class="table table-hover" style="width: 100%; text-align: left">
+      <tbody>
+        <tr>
+          <td>Available Stations</td>
+          <td><img src="/static/image/marker_red_mini.png" alt=""></td>
+        </tr>
+        <tr>
+          <td>Source Station</td>
+          <td><img src="/static/image/marker_black_mini.png" alt=""></td>
+        </tr>
+        <tr>
+          <td>Destination Station</td>
+          <td><img src="/static/image/marker_green_mini.png" alt=""></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <div id="map"></div>
 
   <input type="hidden" id="selected_start_location">
