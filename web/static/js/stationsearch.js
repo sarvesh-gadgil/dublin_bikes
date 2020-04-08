@@ -72,9 +72,9 @@
              } else {
                  const station_name = response.station_name.replace("'", "###");
                  if (locType == LOCATION.SOURCE) {
-                     chooseStartLocation(response.station_id, station_name, response.available_bike_stands, response.available_bikes);
+                     chooseStartLocation(response.station_id, station_name);
                  } else {
-                     chooseDestinationLocation(response.station_id, station_name, response.available_bike_stands, response.available_bikes);
+                     chooseDestinationLocation(response.station_id, station_name);
                  }
              }
          },
@@ -88,12 +88,12 @@
 
  const setStart = (data) => {
      let startLoc = $("#selected_start_location")[0];
-     startLoc.innerText = data;
+     startLoc.value = data;
  }
 
  const setDestination = (data) => {
      let startLoc = $("#selected_destination_location")[0];
-     startLoc.innerText = data;
+     startLoc.value = data;
  }
 
  //  const resetToFromInfo = () => {
@@ -226,7 +226,8 @@
  //  const chooseStartLocation = (station_id, station_name, available_bike_stands, available_bikes) => {
  const chooseStartLocation = (station_id, station_name) => {
      if (destinationStation != null && station_id == destinationStation) {
-         alert("Start and destination station cannot be same.")
+         alert("Start and destination station cannot be same.");
+         $("#start_location")[0].value = $("#selected_start_location")[0].value;
          return;
      }
      station_name = station_name.replace("###", "'");
@@ -240,7 +241,7 @@
          .station_id == station_id);
      infowindow.open(map, choosedStation);
      InforObj.push(infowindow);
-     setStart(station_id);
+     setStart(station_name);
 
      // Getting the div id
      //  let starting_location_text = $("#start_location_name")[0];
@@ -263,8 +264,10 @@
  const chooseDestinationLocation = (station_id, station_name) => {
      if (startStation != null && station_id == startStation) {
          alert("Start and destination station cannot be same.")
+         $("#destination_location")[0].value = $("#selected_destination_location")[0].value;
          return;
      }
+     station_name = station_name.replace("###", "'");
      closeAllOtherInfo();
      const infowindow = new google.maps.InfoWindow({
          content: "Station Name: " + station_name
@@ -279,7 +282,7 @@
 
      infowindow.open(map, choosedStation);
      InforObj.push(infowindow);
-     setDestination(station_id);
+     setDestination(station_name);
 
      // Getting the div id
      //  let destination_location_text = $("#destination_location_name")[0];

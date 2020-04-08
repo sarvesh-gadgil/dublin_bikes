@@ -31,7 +31,8 @@ const loadStaticBikesData = () => {
                         lat: parseFloat(element.lat),
                         lng: parseFloat(element.lng)
                     }],
-                    station_id: element.number
+                    station_id: element.number,
+                    bike_stands: element.bike_stands
                 });
             });
 

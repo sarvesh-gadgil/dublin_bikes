@@ -1,4 +1,6 @@
 var directionsRenderer;
+var startStationCircle;
+var destinationStationCircle;
 
 const getSourceAndDestinationCoordinates = () => {
     const startDate = $("#start_datetime_picker")[0].value.trim();
@@ -59,6 +61,22 @@ const removeRoute = () => {
         directionsRenderer.setMap(null);
         directionsRenderer = null;
     }
+    if (startStationCircle != null) {
+        startStationCircle.setMap(null);
+        startStationCircle = null;
+    }
+    if (destinationStationCircle != null) {
+        destinationStationCircle.setMap(null);
+        destinationStationCircle = null;
+    }
+    if (startpopup != null) {
+        startpopup.setMap(null);
+        startpopup = null;
+    }
+    if (destinationpopup != null) {
+        destinationpopup.setMap(null);
+        destinationpopup = null;
+    }
 }
 
 const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
@@ -115,12 +133,12 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             // predictionInfo += "Feels Like: " + response.feels_like_prediction + "<br/>";
             // predictionInfo += "Max Temperature: " + response.temp_max_prediction + "<br/>";
             // predictionInfo += "Min Temperature: " + response.temp_min_prediction + "<br/><br/>";
-            predictionInfo += "=========Start Station Info=======<br/>";
-            predictionInfo += "Available Bikes: " + response.start_station_bikes_prediction + "<br/>";
-            predictionInfo += "Available Bike Stands: " + response.start_station_bike_stands_prediction + "<br/><br/>";
-            predictionInfo += "=========Destination Station Info=======<br/>";
-            predictionInfo += "Available Bikes: " + response.destination_station_bikes_prediction + "<br/>";
-            predictionInfo += "Available Bike Stands: " + response.destination_station_bike_stands_prediction + "<br/><br/>";
+            // predictionInfo += "=========Start Station Info=======<br/>";
+            // predictionInfo += "Available Bikes: " + response.start_station_bikes_prediction + "<br/>";
+            // predictionInfo += "Available Bike Stands: " + response.start_station_bike_stands_prediction + "<br/><br/>";
+            // predictionInfo += "=========Destination Station Info=======<br/>";
+            // predictionInfo += "Available Bikes: " + response.destination_station_bikes_prediction + "<br/>";
+            // predictionInfo += "Available Bike Stands: " + response.destination_station_bike_stands_prediction + "<br/><br/>";
 
             // Setting distance and duration
             $("#distance")[0].innerText = distance;
@@ -130,8 +148,97 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
 
             $("#show_hide_loader")[0].style.display = "none";
-            $("#route_info")[0].innerHTML = predictionInfo;
+            // $("#route_info")[0].innerHTML = predictionInfo;
             $("#weather_div")[0].style.display = "block";
+
+            // create circle for start 
+            // Reference: https://developers.google.com/maps/documentation/javascript/examples/circle-simple
+            const startStationForRadius = markersArray.find(predicate => predicate
+                .station_id == startStation);
+            const startBikesCount = (response.start_station_bikes_prediction / startStationForRadius.bike_stands) * 100;
+            let startBikesRadius = null;
+            let startBikesRadiusColor = null;
+            if (startBikesCount <= 10) {
+                startBikesRadius = 30;
+                startBikesRadiusColor = '#FF0000';
+            } else if (startBikesCount > 10 && startBikesCount <= 40) {
+                startBikesRadius = 50;
+                startBikesRadiusColor = 'darkorange';
+            } else if (startBikesCount > 40) {
+                startBikesRadius = 70;
+                startBikesRadiusColor = 'darkgreen';
+            }
+            startStationCircle = new google.maps.Circle({
+                strokeColor: startBikesRadiusColor,
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: startBikesRadiusColor,
+                fillOpacity: 0.6,
+                map: map,
+                center: startStationForRadius.position,
+                radius: startBikesRadius
+            });
+
+            // Create popup marker for showing available bikes and available bike stands at start
+            // Reference: https://developers.google.com/maps/documentation/javascript/examples/overlay-popup
+            document.getElementById('startContentCreate').innerHTML = "<div id=\"startContent\"></div>";
+            const customPopOverLatLngStart = markersOnMap.find(predicate => predicate
+                .station_id == startStation).LatLng[0];
+            startPrediction = "Station Name: <b>" + startStationForRadius.placeName + "</b><br/>";
+            startPrediction += "Available Bikes: <b>" + response.start_station_bikes_prediction + "</b><br/>";
+            startPrediction += "Available Bike Stands: <b>" + response.start_station_bike_stands_prediction + "</b><br/>";
+            startPrediction += "<div style=\"text-align: center\"><a href='#!' onclick=\"showStartStationAnalytics()\">View More</a></div>";
+            document.getElementById('startContent').innerHTML = startPrediction;
+            Popup = createPopupClass();
+            startpopup = new Popup(
+                new google.maps.LatLng(customPopOverLatLngStart.lat, customPopOverLatLngStart.lng),
+                document.getElementById('startContent'));
+            startpopup.setMap(map);
+
+            // create circle for destination 
+            // Reference: https://developers.google.com/maps/documentation/javascript/examples/circle-simple
+            const destinationStationForRadius = markersArray.find(predicate => predicate
+                .station_id == destinationStation);
+            const destinationBikesCount = (response.destination_station_bikes_prediction / destinationStationForRadius.bike_stands) * 100;
+            let destinationBikesRadius = null;
+            let destinationBikesRadiusColor = null;
+            if (destinationBikesCount <= 10) {
+                destinationBikesRadius = 30;
+                destinationBikesRadiusColor = '#FF0000';
+            } else if (destinationBikesCount > 10 && destinationBikesCount <= 40) {
+                destinationBikesRadius = 50;
+                destinationBikesRadiusColor = 'darkorange';
+            } else if (destinationBikesCount > 40) {
+                destinationBikesRadius = 70;
+                destinationBikesRadiusColor = 'darkgreen';
+            }
+            destinationStationCircle = new google.maps.Circle({
+                strokeColor: destinationBikesRadiusColor,
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: destinationBikesRadiusColor,
+                fillOpacity: 0.6,
+                map: map,
+                center: destinationStationForRadius.position,
+                radius: destinationBikesRadius
+            });
+
+            // Create popup marker for showing available bikes and available bike stands at destination
+            // Reference: https://developers.google.com/maps/documentation/javascript/examples/overlay-popup
+            document.getElementById('destinationContentCreate').innerHTML = "<div id=\"destinationContent\"></div>";
+            const customPopOverLatLngDestination = markersOnMap.find(predicate => predicate
+                .station_id == destinationStation).LatLng[0];
+            destinationPrediction = "Station Name: <b>" + destinationStationForRadius.placeName + "</b><br/>";
+            destinationPrediction += "Available Bikes: <b>" + response.destination_station_bikes_prediction + "</b><br/>";
+            destinationPrediction += "Available Bike Stands: <b>" + response.destination_station_bike_stands_prediction + "</b><br/>";
+            destinationPrediction += "<div style=\"text-align: center\"><a href='#!' onclick=\"showDestinationStationAnalytics()\">View More</a></div>";
+            document.getElementById('destinationContent').innerHTML = destinationPrediction;
+            Popup = createPopupClass();
+            destinationpopup = new Popup(
+                new google.maps.LatLng(customPopOverLatLngDestination.lat, customPopOverLatLngDestination.lng),
+                document.getElementById('destinationContent'));
+            destinationpopup.setMap(map);
+
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log("Error in getBikeAndWeatherPrediction()")
@@ -148,4 +255,20 @@ const clearAllRouteInfo = () => {
     $("#div_drizzle")[0].style.display = "none";
     $("#div_high_rain")[0].style.display = "none";
     $("#floating-panel")[0].style.display = "none";
+    if (startpopup != null) {
+        startpopup.setMap(null);
+        startpopup = null;
+    }
+    if (destinationpopup != null) {
+        destinationpopup.setMap(null);
+        destinationpopup = null;
+    }
+}
+
+const showStartStationAnalytics = () => {
+    alert('start')
+}
+
+const showDestinationStationAnalytics = () => {
+    alert('des')
 }
