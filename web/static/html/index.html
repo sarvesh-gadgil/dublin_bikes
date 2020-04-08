@@ -162,7 +162,8 @@
   <input type="hidden" id="selected_destination_location">
 
 
-  <!-- Modal -->
+  <!-- Modal for source destination marker-->
+  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
   <div class="modal fade" id="sourceDestinationModal" role="dialog">
     <div class="modal-dialog">
 
@@ -180,6 +181,43 @@
             onclick="setStartStationViaOnclick()">Source</button>
           <button type="button" class="btn btn-default" data-dismiss="modal"
             onclick="setEndStationViaOnclick()">Destination</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal for visualisation-->
+  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
+  <div class="modal fade" id="visualisationModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bike Availability Grid</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
+          <ul class="nav nav-pills nav-justified">
+            <li class="active"><a data-toggle="pill" href="#weekly"
+                onclick="getWeeklyBikeAvailabilityGraph()">Weekly</a></li>
+            <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()">Hourly</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="weekly" class="tab-pane fade in active">
+              <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
+              <p>Some content.</p>
+            </div>
+            <div id="hourly" class="tab-pane fade">
+              <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
+              <p>Some content in menu 1.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
 

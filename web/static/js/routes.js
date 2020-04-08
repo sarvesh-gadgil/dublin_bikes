@@ -266,9 +266,17 @@ const clearAllRouteInfo = () => {
 }
 
 const showStartStationAnalytics = () => {
-    alert('start')
+    $('#visualisationModal').modal('show');
 }
 
 const showDestinationStationAnalytics = () => {
-    alert('des')
+    $('#visualisationModal').modal('show');
+}
+
+const getWeeklyBikeAvailabilityGraph = () => {
+    alert('in getWeeklyBikeAvailabilityGraph')
+}
+
+const getHourlyBikeAvailabilityGraph = () => {
+    alert('in getHourlyBikeAvailabilityGraph')
 }
