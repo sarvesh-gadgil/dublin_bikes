@@ -1,0 +1,208 @@
+<!--Template Reference: https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_cv&stacked=h-->
+<!DOCTYPE html>
+<html lang="en">
+<title>Dublin Bikes</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- For jquery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- For jquery ui autocomplete -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- Bootstrap links -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap datetime picker links -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js">
+</script>
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Custom JS code below -->
+<script type="text/javascript" src="static/js/googlemaps.js"></script>
+<script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
+<script type="text/javascript" src="static/js/stationsearch.js"></script>
+<script type="text/javascript" src="static/js/routes.js"></script>
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+    html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
+    .map-responsive{
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+    }
+    .map-responsive iframe{
+    left:0;
+    top:0;
+    height:100%;
+    width:100%;
+    position:absolute;
+    }
+    /* Loader reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader */
+      .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 60px;
+        height: 60px;
+        -webkit-animation: spin 2s linear infinite;
+        /* Safari */
+        animation: spin 2s linear infinite;
+        display: none;
+      }
+
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+</style>
+<body class="w3-light-grey">
+
+<!-- Page Container -->
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+    <!-- Modal -->
+    <div class="modal fade" id="sourceDestinationModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Choose a source or destination for this marker</h4>
+          </div>
+          <!-- <div class="modal-body">
+            <p>Some text in the modal.</p>
+          </div> -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal"
+              onclick="setStartStationViaOnclick()">Source</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"
+              onclick="setEndStationViaOnclick()">Destination</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div><h1 class="w3-text-grey w3-padding-16"><center>Welcome to Dublin Bikes</center></h1></div>
+  <!-- The Grid -->
+  <div class="w3-row-padding">
+
+    <!-- Left Column -->
+    <div class="w3-third">
+
+      <div class="w3-white w3-text-grey w3-card-4">
+        <div class="w3-display-container">
+
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                  <tr style="border: none">
+                    <td><label>Start: </label></td>
+                    <td><input id="start_location"></td>
+                  </tr>
+                  <tr>
+                    <td><label>Destination: </label></td>
+                    <td><input id="destination_location"></td>
+                  </tr>
+                  <tr>
+                    <td><label>Start Date: </label></td>
+                    <td><input type='text' id='start_datetime_picker' /></td>
+<!--                     <td><input type='text' class="form-control" id='start_datetime_picker' /></td>-->
+                  </tr>
+                </tbody>
+              </table>
+                <script type="text/javascript">
+                  $(function () {
+                    $('#start_datetime_picker').datetimepicker({
+                      format: 'DD/MM/YYYY HH:mm'
+                    })
+                  });
+                </script>
+            </div>
+        <br>
+            <div id="nearest_bike_locations" style="display: none"></div>
+            <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
+            <br />
+            <br />
+            <div class="loader" id="show_hide_loader"></div>
+            <div id="route_info"></div>
+            <br />
+            <br />
+        </div>
+
+
+      </div><br>
+
+    <!-- End Left Column -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-twothird">
+
+      <div class="w3-container w3-card w3-white w3-margin-bottom">
+          <div id="map"></div>
+          <input type="hidden" id="selected_start_location">
+    <input type="hidden" id="selected_destination_location">
+          <div class="map-responsive">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2381.886702766922!2d-6.246860784736876!3d53.345284279978806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48670e9268b512db%3A0x3e6fdfb2436b01e0!2sWindmill%20Lane%20Apartments%2C%20Windmill%20Ln%2C%20Dublin%20Docklands%2C%20Dublin%202!5e0!3m2!1sen!2sie!4v1586395872655!5m2!1sen!2sie" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+          </div>
+
+      </div>
+
+    <!-- End Right Column -->
+    </div>
+
+  <!-- End Grid -->
+  </div>
+
+  <!-- End Page Container -->
+</div>
+
+<!--
+<footer class="w3-container w3-teal w3-center w3-margin-top">
+  <p>Find me on social media.</p>
+  <i class="fa fa-facebook-official w3-hover-opacity"></i>
+  <i class="fa fa-instagram w3-hover-opacity"></i>
+  <i class="fa fa-snapchat w3-hover-opacity"></i>
+  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+  <i class="fa fa-twitter w3-hover-opacity"></i>
+  <i class="fa fa-linkedin w3-hover-opacity"></i>
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</footer>
+-->
+    <!-- For Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
+</body>
+</html>

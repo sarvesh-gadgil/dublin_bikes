@@ -1,154 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <title>Dublin Bikes</title>
-  <meta charset="UTF-8">
+  <head>
+    <title>Dublin Bikes</title>
+    <meta charset="UTF-8">
 
-  <!-- For jquery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- For jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-  <!-- For jquery ui autocomplete -->
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- For jquery ui autocomplete -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-  <!-- Bootstrap links -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Bootstrap links -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-  <!-- Bootstrap datetime picker links -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js">
-  </script>
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+    <!-- Bootstrap datetime picker links -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js">
+    </script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-  <!-- Custom JS code below -->
-  <script type="text/javascript" src="static/js/googlemaps.js"></script>
-  <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
-  <script type="text/javascript" src="static/js/stationsearch.js"></script>
-  <script type="text/javascript" src="static/js/routes.js"></script>
+    <!-- Custom JS code below -->
+    <script type="text/javascript" src="static/js/googlemaps.js"></script>
+    <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
+    <script type="text/javascript" src="static/js/stationsearch.js"></script>
+    <script type="text/javascript" src="static/js/routes.js"></script>
 
-  <style>
-    #map {
-      height: 700px;
-      width: 100%;
-    }
-  </style>
-  <style>
-    /* Loader reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader */
-    .loader {
-      border: 16px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 16px solid #3498db;
-      width: 60px;
-      height: 60px;
-      -webkit-animation: spin 2s linear infinite;
+    <style>
+      #map {
+        height: 700px;
+        width: 100%;
+      }
+    </style>
+    <style>
+      /* Loader reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader */
+      .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 60px;
+        height: 60px;
+        -webkit-animation: spin 2s linear infinite;
+        /* Safari */
+        animation: spin 2s linear infinite;
+        display: none;
+      }
+
       /* Safari */
-      animation: spin 2s linear infinite;
-      display: none;
-    }
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
 
-    /* Safari */
-    @-webkit-keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
       }
 
-      100% {
-        -webkit-transform: rotate(360deg);
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
       }
-    }
+    </style>
+  </head>
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
+  <body>
+    <h1 style="text-align: center"> Welcome to Dublin Bikes </h1><br />
+    <!-- Stations:<div id="bike_locations" style="display: none"></div>
+    <br /> -->
 
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <h1 style="text-align: center"> Welcome to Dublin Bikes </h1><br />
-  <!-- Stations:<div id="bike_locations" style="display: none"></div>
-  <br /> -->
-
-  <label>Start: </label>
-  <input id="start_location">
-  <label>Destination: </label>
-  <input id="destination_location">
-  <div class="container">
-    <div class="row">
-      <div class='col-sm-2'>
-        Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
-      </div>
-      <script type="text/javascript">
-        $(function () {
-          $('#start_datetime_picker').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm'
-          })
-        });
-      </script>
-    </div>
-  </div>
-  <br />
-  <div id="nearest_bike_locations" style="display: none"></div>
-  <!-- <br />
-  <br /> -->
-  <!-- <div id="to_from_info"></div> -->
-  <!-- <div id="start_location_name"></div>
-  <br>
-  <div id="destination_location_name"></div>
-  <br />
-  <br /> -->
-  <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
-  <br />
-  <br />
-  <div class="loader" id="show_hide_loader"></div>
-  <div id="route_info"></div>
-  <br />
-  <br />
-  <div id="map"></div>
-
-  <input type="hidden" id="selected_start_location">
-  <input type="hidden" id="selected_destination_location">
-
-
-  <!-- Modal -->
-  <div class="modal fade" id="sourceDestinationModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Choose a source or destination for this marker</h4>
+    <label>Start: </label>
+    <input id="start_location">
+    <label>Destination: </label>
+    <input id="destination_location">
+    <div class="container">
+      <div class="row">
+        <div class='col-sm-2'>
+          Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
         </div>
-        <!-- <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div> -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal"
-            onclick="setStartStationViaOnclick()">Source</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal"
-            onclick="setEndStationViaOnclick()">Destination</button>
-        </div>
+        <script type="text/javascript">
+          $(function () {
+            $('#start_datetime_picker').datetimepicker({
+              format: 'DD/MM/YYYY HH:mm'
+            })
+          });
+        </script>
       </div>
-
     </div>
-  </div>
+    <br />
+    <div id="nearest_bike_locations" style="display: none"></div>
+    <!-- <br />
+    <br /> -->
+    <!-- <div id="to_from_info"></div> -->
+    <!-- <div id="start_location_name"></div>
+    <br>
+    <div id="destination_location_name"></div>
+    <br />
+    <br /> -->
+    <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
+    <br />
+    <br />
+    <div class="loader" id="show_hide_loader"></div>
+    <div id="route_info"></div>
+    <br />
+    <br />
+    <div id="map"></div>
+
+    <input type="hidden" id="selected_start_location">
+    <input type="hidden" id="selected_destination_location">
 
 
-  <!-- For Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
-</body>
+    <!-- Modal -->
+    <div class="modal fade" id="sourceDestinationModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Choose a source or destination for this marker</h4>
+          </div>
+          <!-- <div class="modal-body">
+            <p>Some text in the modal.</p>
+          </div> -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal"
+              onclick="setStartStationViaOnclick()">Source</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"
+              onclick="setEndStationViaOnclick()">Destination</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- For Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
+  </body>
 
 </html>
