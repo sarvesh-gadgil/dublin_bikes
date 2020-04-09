@@ -37,6 +37,17 @@
   <link rel="stylesheet" href="static/css/weather.css">
   <link rel="stylesheet" href="static/css/mappopup.css">
   <link rel="stylesheet" href="static/css/heroimage.css">
+  <style>
+    div.admin-box {
+      background-color: rgb(216, 216, 216);
+      color: black
+    }
+
+    .active a {
+      background-color: rgb(216, 216, 216) !important;
+      color: black !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -251,25 +262,29 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
+            <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
             <h4 class="modal-title">Bike Availability Grid</h4>
           </div>
           <div class="modal-body">
             <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
             <ul class="nav nav-pills nav-justified">
-              <li class="active"><a data-toggle="pill" href="#weekly"
-                  onclick="getWeeklyBikeAvailabilityGraph()">Weekly</a></li>
-              <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()">Hourly</a></li>
+              <li class="active"><a data-toggle="pill" href="#weekly" onclick="getWeeklyBikeAvailabilityGraph()"
+                  style="color: black" id="weekly_tab_id">Weekly</a></li>
+              <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()" style="color: black"
+                  id="hourly_tab_id">Hourly</a></li>
             </ul>
             <div class="tab-content">
+              <!-- <div class="tab-pane fade">
+                <div id="weekly_hourly_data"></div>
+              </div> -->
               <div id="weekly" class="tab-pane fade in active">
                 <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
-                <p>Some content.</p>
+                <div id="weekly_chart"></div>
               </div>
               <div id="hourly" class="tab-pane fade">
                 <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
-                <p>Some content in menu 1.</p>
+                <div id="hourly_chart"></div>
               </div>
             </div>
           </div>

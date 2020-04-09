@@ -67,6 +67,7 @@
          url: API_URL + "/api/google/get/place/coordinates?place_id=" + place_id,
          type: "GET",
          success: function (response) {
+             $("#nearest_bike_locations")[0].innerText = "";
              if (response.station_id == null) {
                  displayNearestStations(response, locType);
              } else {

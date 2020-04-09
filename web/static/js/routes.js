@@ -267,17 +267,24 @@ const clearAllRouteInfo = () => {
 }
 
 const showStartStationAnalytics = () => {
+    getWeeklyBikeAvailabilityGraph();
     $('#visualisationModal').modal('show');
 }
 
 const showDestinationStationAnalytics = () => {
+    getWeeklyBikeAvailabilityGraph();
     $('#visualisationModal').modal('show');
 }
 
 const getWeeklyBikeAvailabilityGraph = () => {
-    alert('in getWeeklyBikeAvailabilityGraph')
+    $("#weekly_tab_id").tab('show');
+    $("#weekly_chart")[0].innerHTML = "Weekly Data";
+
+    // alert('in getWeeklyBikeAvailabilityGraph')
 }
 
 const getHourlyBikeAvailabilityGraph = () => {
-    alert('in getHourlyBikeAvailabilityGraph')
+    $("#hourly_tab_id").tab('show');
+    $("#hourly_chart")[0].innerHTML = "Hourly Data";
+    // alert('in getHourlyBikeAvailabilityGraph')
 }
