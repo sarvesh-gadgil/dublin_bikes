@@ -3,7 +3,7 @@ var startStationCircle;
 var destinationStationCircle;
 
 const getSourceAndDestinationCoordinates = () => {
-    const startDate = $("#start_datetime_picker")[0].value.trim();
+    const startDate = $("#selected_datetime")[0].value;
     if (startStation == -1) {
         alert('Please select a start station');
     } else if (destinationStation == -1) {
@@ -11,6 +11,7 @@ const getSourceAndDestinationCoordinates = () => {
     } else if (startDate == "") {
         alert('Please select a start date');
     } else {
+        $("#nearest_bike_locations")[0].innerText = "";
         const sourceLatLng = markersOnMap.find(predicate => predicate
             .station_id == startStation).LatLng;
         const destinationLatLng = markersOnMap.find(predicate => predicate

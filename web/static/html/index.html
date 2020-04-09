@@ -4,6 +4,7 @@
 <head>
   <title>Dublin Bikes</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- For jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -35,196 +36,252 @@
   <link rel="stylesheet" href="static/css/style.css">
   <link rel="stylesheet" href="static/css/weather.css">
   <link rel="stylesheet" href="static/css/mappopup.css">
+  <link rel="stylesheet" href="static/css/heroimage.css">
 </head>
 
 <body>
-  <h1 style="text-align: center"> Welcome to Dublin Bikes </h1><br />
-  <!-- Stations:<div id="bike_locations" style="display: none"></div>
-  <br /> -->
-
-  <label>Start: </label>
-  <input id="start_location">
-  <label>Destination: </label>
-  <input id="destination_location">
-  <div class="container">
-    <div class="row">
-      <div class='col-sm-2'>
-        Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
-      </div>
-      <script type="text/javascript">
-        $(function () {
-          $('#start_datetime_picker').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm'
-          })
-        });
-      </script>
+  <div class="hero-image">
+    <div class="hero-text">
+      <h1 style="font-size:80px">Welcome to Dublin Bikes</h1>
     </div>
   </div>
   <br />
-  <div id="nearest_bike_locations" style="display: none"></div>
-  <!-- <br />
+  <div style="margin: 0px">
+    <!-- Stations:<div id="bike_locations" style="display: none"></div>
   <br /> -->
-  <!-- <div id="to_from_info"></div> -->
-  <!-- <div id="start_location_name"></div>
-  <br>
-  <div id="destination_location_name"></div>
-  <br />
-  <br /> -->
-  <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
-  <br />
-  <br />
-  <div class="loader" id="show_hide_loader"></div>
-  <div class="col-sm-10 col-sm-offset-4">
-    <div class="panel panel-default" style="width: 300px; box-shadow: 2px 4px 5px lightgray; display: none"
-      id="weather_div">
-      <div class="panel-body">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-sm-4" style="text-align: center">
-              <span style="font-weight: bolder; font-size: 30px;" id="temperature"></span><br />
-              <span style="font-size: 15px;" id="weather_desc"></span>
+    <div class="row">
+      <div class="col-sm-3">
+        <!-- <div class="panel panel-default" style="width: 250px; box-shadow: 2px 4px 5px lightgray;">
+        <div class="panel-body"> -->
+        <div class="well well-lg col-sm-12" style="background-color: rgb(240, 240, 240);">
+          <!-- <div class="col-sm-12"> -->
+          <div class="form-group">
+            <label for="start">Source:</label>
+            <input class="form-control" id="start_location">
+          </div>
+          <div class="form-group">
+            <label for="dest">Destination:</label>
+            <input class="form-control" id="destination_location">
+          </div>
+
+          <div class="form-group">
+            <label for="start_dt">Start Date:</label>
+            <div class='input-group date' id='start_datetime_picker'>
+              <input type='text' class="form-control" readonly />
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+              </span>
             </div>
-            <div class="col-sm-8" style="text-align: left">
-              <div class="icon cloudy" id="div_cloudy" style="display: none">
-                <div class="cloud"></div>
-                <div class="cloud"></div>
-              </div>
-              <div class="icon sun-shower" id="div_drizzle" style="display: none">
-                <div class="cloud"></div>
-                <div class="sun">
-                  <div class="rays"></div>
+            <script type="text/javascript">
+              $(function () {
+                $('#start_datetime_picker').datetimepicker({
+                  format: 'DD/MM/YYYY HH:mm',
+                  ignoreReadonly: true,
+                  minDate: moment()
+                }).on("dp.change", function (e) {
+                  $("#selected_datetime")[0].value = e.date.format('DD/MM/YYYY HH:mm');
+                });
+              });
+            </script>
+          </div>
+          <br />
+          <button type="button" class="btn btn-block" onclick="getSourceAndDestinationCoordinates()"
+            style="background-color: rgb(41, 41, 41); color: white">Show
+            Route</button>
+          <!-- </div> -->
+
+
+          <!-- </div>
+      </div> -->
+          <!-- <label>Start: </label>
+      <input id="start_location">
+      <label>Destination: </label>
+      <input id="destination_location">
+      <div class="container">
+        <div class="row">
+          <div class='col-sm-2'>
+            Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
+          </div>
+          <script type="text/javascript">
+            $(function () {
+              $('#start_datetime_picker').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm'
+              })
+            });
+          </script>
+        </div>
+      </div> -->
+          <div id="nearest_bike_locations" style="display: none"></div>
+          <br /><br />
+          <div class="loader" id="show_hide_loader"></div>
+          <!-- <div class="col-sm-10 col-sm-offset-4"> -->
+          <div class="panel panel-default" style="box-shadow: 2px 4px 5px lightgray; display: none" id="weather_div">
+            <div class="panel-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <span style="font-weight: bolder; font-size: 30px;" id="temperature"></span><br />
+                    <span style="font-size: 15px;" id="weather_desc"></span>
+                  </div>
+                  <div class="col-sm-8">
+                    <div class="icon cloudy col-sm-8" id="div_cloudy" style="display: none;">
+                      <div class="cloud"></div>
+                      <div class="cloud"></div>
+                    </div>
+                    <div class="icon sun-shower" id="div_drizzle" style="display: none">
+                      <div class="cloud"></div>
+                      <div class="sun">
+                        <div class="rays"></div>
+                      </div>
+                      <div class="rain"></div>
+                    </div>
+                    <div class="icon rainy" id="div_high_rain" style="display: none">
+                      <div class="cloud"></div>
+                      <div class="rain"></div>
+                    </div>
+                  </div>
                 </div>
-                <div class="rain"></div>
               </div>
-              <div class="icon rainy" id="div_high_rain" style="display: none">
-                <div class="cloud"></div>
-                <div class="rain"></div>
-              </div>
+              <div id="warning_message"></div>
+              <table class="table table-hover">
+                <tbody style="text-align: justify">
+                  <tr>
+                    <td>Max</td>
+                    <td><span id="max_temp"></span></td>
+                  </tr>
+                  <tr>
+                    <td>Min</td>
+                    <td><span id="min_temp"></span></td>
+                  </tr>
+                  <tr>
+                    <td>Feels Like</td>
+                    <td><span id="feels_like"></span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-        <div id="warning_message"></div>
-        <table class="table table-hover">
-          <tbody style="text-align: justify">
-            <tr>
-              <td>Max</td>
-              <td><span id="max_temp"></span></td>
-            </tr>
-            <tr>
-              <td>Min</td>
-              <td><span id="min_temp"></span></td>
-            </tr>
-            <tr>
-              <td>Feels Like</td>
-              <td><span id="feels_like"></span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div id="route_info"></div>
+      </div>
+      <div class="col-sm-9">
+        <div class="well well-sm" style="background-color: rgb(240, 240, 240);">
+          <div id="floating-panel">
+            Distance: <span id="distance" style="font-weight: bolder"></span><br />
+            Duration: <span id="duration" style="font-weight: bolder"></span>
+          </div>
+
+          <div id="legend">
+            <div style="text-align: right">
+              <span style="float: left; font-size: larger">Legend</span>&nbsp;&nbsp;
+              <a href="#!" data-toggle="collapse" data-target="#legend_table" style="color: black;">
+                <span class="glyphicon glyphicon-sort"></span></a>
+            </div>
+            <table class="table table-hover collapse" style="width: 100%; text-align: left" id="legend_table">
+              <tbody>
+                <tr>
+                  <td>Available Stations</td>
+                  <td><img src="/static/image/marker_red_mini.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Source Station</td>
+                  <td><img src="/static/image/marker_black_mini.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Destination Station</td>
+                  <td><img src="/static/image/marker_green_mini.png" alt=""></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="map"></div>
+          <!-- <div id="content" style="display: none">
+            Station Name:
+          </div> -->
+          <div id="startContentCreate"></div>
+          <div id="destinationContentCreate"></div>
+        </div>
       </div>
     </div>
-  </div>
-  <div id="route_info"></div>
-  <br />
-  <br />
-  <div id="floating-panel">
-    Distance: <span id="distance" style="font-weight: bolder"></span><br />
-    Duration: <span id="duration" style="font-weight: bolder"></span>
-  </div>
+    <h1 style="font-family: SignPainter; font-size: 47px">About Dublin Bikes</h1>
+    <span style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
+      <h6>The Lorem ipsum text is derived from sections 1.10.32 and 1.10.33 of Cicero's De finibus bonorum et malorum.
+        Fill in the below details to
+        view weather prediction, bikes availability and more!</h6>
+    </span>
+    <br />
 
-  <div id="legend">
-    <span style="text-align: center; font-weight: bolder; font-size: larger">Legend</span><br />
-    <table class="table table-hover" style="width: 100%; text-align: left">
-      <tbody>
-        <tr>
-          <td>Available Stations</td>
-          <td><img src="/static/image/marker_red_mini.png" alt=""></td>
-        </tr>
-        <tr>
-          <td>Source Station</td>
-          <td><img src="/static/image/marker_black_mini.png" alt=""></td>
-        </tr>
-        <tr>
-          <td>Destination Station</td>
-          <td><img src="/static/image/marker_green_mini.png" alt=""></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div id="map"></div>
-  <!-- <div id="content" style="display: none">
-    Station Name:
-  </div> -->
-  <div id="startContentCreate"></div>
-  <div id="destinationContentCreate"></div>
-
-  <input type="hidden" id="selected_start_location">
-  <input type="hidden" id="selected_destination_location">
+    <input type="hidden" id="selected_start_location">
+    <input type="hidden" id="selected_destination_location">
+    <input type="hidden" id="selected_datetime">
 
 
-  <!-- Modal for source destination marker-->
-  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
-  <div class="modal fade" id="sourceDestinationModal" role="dialog">
-    <div class="modal-dialog">
+    <!-- Modal for source destination marker-->
+    <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
+    <div class="modal fade" id="sourceDestinationModal" role="dialog">
+      <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Choose a source or destination for this marker</h4>
-        </div>
-        <!-- <div class="modal-body">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
+            <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+            <h4 class="modal-title">Choose a source or destination for this marker</h4>
+          </div>
+          <!-- <div class="modal-body">
           <p>Some text in the modal.</p>
         </div> -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal"
-            onclick="setStartStationViaOnclick()">Source</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal"
-            onclick="setEndStationViaOnclick()">Destination</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Modal for visualisation-->
-  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
-  <div class="modal fade" id="visualisationModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Bike Availability Grid</h4>
-        </div>
-        <div class="modal-body">
-          <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
-          <ul class="nav nav-pills nav-justified">
-            <li class="active"><a data-toggle="pill" href="#weekly"
-                onclick="getWeeklyBikeAvailabilityGraph()">Weekly</a></li>
-            <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()">Hourly</a></li>
-          </ul>
-          <div class="tab-content">
-            <div id="weekly" class="tab-pane fade in active">
-              <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
-              <p>Some content.</p>
-            </div>
-            <div id="hourly" class="tab-pane fade">
-              <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
-              <p>Some content in menu 1.</p>
-            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default sourceButton" data-dismiss="modal"
+              onclick="setStartStationViaOnclick()"
+              style="background-color: rgb(240, 240, 240); color: black">Source</button>
+            <button type="button" class="btn btn-default destinationButton" data-dismiss="modal"
+              onclick="setEndStationViaOnclick()"
+              style="background-color: rgb(240, 240, 240); color: black">Destination</button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
+
       </div>
-
     </div>
+
+    <!-- Modal for visualisation-->
+    <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
+    <div class="modal fade" id="visualisationModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Bike Availability Grid</h4>
+          </div>
+          <div class="modal-body">
+            <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
+            <ul class="nav nav-pills nav-justified">
+              <li class="active"><a data-toggle="pill" href="#weekly"
+                  onclick="getWeeklyBikeAvailabilityGraph()">Weekly</a></li>
+              <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()">Hourly</a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="weekly" class="tab-pane fade in active">
+                <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
+                <p>Some content.</p>
+              </div>
+              <div id="hourly" class="tab-pane fade">
+                <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
+                <p>Some content in menu 1.</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
-
-
   <!-- For Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
 </body>

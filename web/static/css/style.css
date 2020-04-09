@@ -1,5 +1,5 @@
 #map {
-    height: 700px;
+    height: 800px;
     width: 100%;
 }
 
@@ -7,13 +7,19 @@
 .loader {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 16px solid #3498db;
+    border-top: 16px solid rgb(41, 41, 41);
     width: 60px;
     height: 60px;
     -webkit-animation: spin 2s linear infinite;
     /* Safari */
     animation: spin 2s linear infinite;
     display: none;
+    text-align: center;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 /* Safari */
@@ -73,4 +79,28 @@
     border: 1px solid #ccc;
     box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
     display: none;
+}
+
+.leftColumn {
+    width: 25%;
+    display: block;
+    float: left;
+    overflow: auto;
+    height: 1000px;
+}
+
+.rightColumn {
+    width: 75%;
+    display: block;
+    float: right;
+    height: auto;
+    overflow: auto
+}
+
+.sourceButton:hover {
+    background-color: white;
+}
+
+.destinationButton:hover {
+    background-color: white;
 }

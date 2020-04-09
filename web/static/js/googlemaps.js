@@ -75,7 +75,7 @@ const setStartStationViaOnclick = () => {
     $("#start_location")[0].value = marker.get('placeName');
     startStation = marker.get('station_id');
     getBikesAvailabilityDetails();
-    if (startStation != -1 && destinationStation != -1 && $("#start_datetime_picker")[0].value.trim() != "") {
+    if (startStation != -1 && destinationStation != -1 && $("#selected_datetime")[0].value != "") {
         getSourceAndDestinationCoordinates();
     }
 }
@@ -98,7 +98,7 @@ const setEndStationViaOnclick = () => {
     $("#destination_location")[0].value = marker.get('placeName');
     destinationStation = marker.get('station_id');
     getBikesAvailabilityDetails();
-    if (startStation != -1 && destinationStation != -1 && $("#start_datetime_picker")[0].value.trim() != "") {
+    if (startStation != -1 && destinationStation != -1 && $("#selected_datetime")[0].value != "") {
         getSourceAndDestinationCoordinates();
     }
 }

@@ -11,10 +11,10 @@
  //      "<h2>Choose destination station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
 
  const start_location_table =
-     "<h4>Choose starting station from below:</h4><div class=\"list-group\" style=\"width: 300px; text-align: center; font-size: small\">";
+     "<h4>Choose starting station from below:</h4><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
 
  const destination_location_table =
-     "<h4>Choose destination station from below:</h4><div class=\"list-group\" style=\"width: 300px; text-align: center; font-size: small\">";
+     "<h4>Choose destination station from below:</h4><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
 
  $(function () {
      $("#start_location").autocomplete({
@@ -209,10 +209,9 @@
      if (!isDataPresent) {
          //  // Getting the div id
          //  let nearest_bike_locations = $("#nearest_bike_locations")[0]
-         "<div class=\"alert alert-danger\"><strong>Danger!</strong> Oops. There are <strong>no stations</strong> found near this location</div>"
          // Setting values
          //  nearest_bike_locations.innerHTML = "<br/>No Stations Found";
-         nearest_bike_locations.innerHTML = "<div class=\"alert alert-danger\" style=\"width: 400px; text-align: center\">Oops. There are <strong>no stations</strong> found near this location.</div>";
+         nearest_bike_locations.innerHTML = "<div class=\"alert alert-danger\" style=\"width: auto; text-align: center\">Oops. There are <strong>no stations</strong> found near this location.</div>";
          nearest_bike_locations.style.display = "block";
      } else {
          //  tableDetails += "</table>"
