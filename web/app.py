@@ -116,8 +116,8 @@ def get_all_static_bikes_data():
             print("Error in closing connection", e)
 
 
-@app.route("/api/station/bikes/static/getBikesTimingMap/<int:start_station_id>/<int:dest_station_id>")
-def get_Bikes_Timing_Map(start_station_id, dest_station_id):
+@app.route("/api/station/bikes/static/getBikesTimingWeekly/<int:start_station_id>/<int:dest_station_id>")
+def get_Bikes_Timing_Map_Weekly(start_station_id, dest_station_id):
 
     # Connect to database
     connection = dbconnect.get_db_connection()
@@ -176,6 +176,68 @@ def get_Bikes_Timing_Map(start_station_id, dest_station_id):
             connection.close()
         except Exception as e:
             print("Error in closing connection", e)
+
+@app.route("/api/station/bikes/static/getBikesTimingDaily/<int:start_station_id>/<int:dest_station_id>")
+def get_Bikes_Timing_Map_Daily(start_station_id, dest_station_id):
+
+    # Connect to database
+    connection = dbconnect.get_db_connection()
+
+    # Create sql
+    sql = "SELECT DAYOFWEEK(date_created),hour(date_created),floor(avg(available_bikes)),number FROM dublin_bikes.dynamic_bike_details where number in ({0},{1}) group by number, hour(date_created),DAYOFWEEK(date_created) order by 4, 1,2".format(int(start_station_id), int(dest_station_id))
+
+    try:
+        # Create cursor object
+        cursor = connection.cursor()
+
+        # Execute query
+        cursor.execute(sql)
+
+        # Getting all the records
+        rows = cursor.fetchall()
+        payload = {}
+        start = {}
+        end = {}
+
+        # Creating JSON response
+        for result in rows:
+            if result[3] == start_station_id:
+                if DAYS[result[0]] in start.keys():
+                    content = start[DAYS[result[0]]]
+                    content['hours'][result[1]] = result[2]
+                    content['total'] += result[2]
+                    start[DAYS[result[0]]] = content
+                else:
+                    content = {'hours': [None] * 24}
+                    content['hours'][result[1]] = result[2]
+                    content['total'] = result[2]
+                    start[DAYS[result[0]]] = content
+            else:
+                if DAYS[result[0]] in end.keys():
+                    content = end[DAYS[result[0]]]
+                    content['hours'][result[1]] = result[2]
+                    content['total'] += result[2]
+                    end[DAYS[result[0]]] = content
+                else:
+                    content = {'hours': [None] * 24}
+                    content['hours'][result[1]] = result[2]
+                    content['total'] = result[2]
+                    end[DAYS[result[0]]] = content
+
+        # Return response
+        payload['start'] = start;
+        payload['end'] = end;
+        return jsonify(payload)
+
+    except Exception as e:
+        print('Error in get_station_details_by_station_id:', e)
+        return "Error"
+    finally:
+        try:
+            connection.close()
+        except Exception as e:
+            print("Error in closing connection", e)
+
 
 @app.route("/api/google/get/places")
 def get_places_by_query():
