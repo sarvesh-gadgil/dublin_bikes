@@ -34,7 +34,7 @@ const addMarkerInfo = () => {
         marker.addListener('mouseover', function () {
             // if (marker.get('station_id') != startStation && marker.get('station_id') != destinationStation) {
             const infowindow = new google.maps.InfoWindow({
-                content: "Station Name: " + marker.get('placeName')
+                content: "Station Name: <b>" + marker.get('placeName') + "</b>"
             });
             infowindow.open(marker.get('map'), marker);
             InforObj.push(infowindow);

@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="static/css/weather.css">
   <link rel="stylesheet" href="static/css/mappopup.css">
   <link rel="stylesheet" href="static/css/heroimage.css">
+  <link rel="shortcut icon" href="static/image/bike-icon.png">
   <style>
     div.admin-box {
       background-color: rgb(216, 216, 216);
@@ -87,14 +88,16 @@
 <body>
   <div class="hero-image">
     <div class="hero-text">
-      <h1 style="font-size:62px">Welcome to Dublin Bikes</h1>
+      <h1 style="font-size:80px">Welcome to Dublin Bikes</h1>
     </div>
   </div>
   <br />
   <div style="margin: 5px">
     <!-- Stations:<div id="bike_locations" style="display: none"></div>
   <br /> -->
-    <h1 style="font-family: SignPainter;font-size: 32px">Fill in the below details to view weather prediction, bikes
+    <h1
+      style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter">
+      Fill in the below details to view weather prediction, bikes
       availability and more!</h1><br>
     <div class="row">
       <div class="col-sm-3">
@@ -232,7 +235,8 @@
               <a href="#!" data-toggle="collapse" data-target="#legend_table" style="color: black;">
                 <span class="glyphicon glyphicon-sort"></span></a>
             </div>
-            <table class="table table-hover collapse" style="width: 100%; text-align: left" id="legend_table">
+            <table class="table table-hover table-condensed collapse" style="width: 100%; text-align: left"
+              id="legend_table">
               <tbody>
                 <tr>
                   <td>Available Stations</td>
@@ -245,6 +249,18 @@
                 <tr>
                   <td>Destination Station</td>
                   <td><img src="/static/image/marker_green_mini.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Low Bike Availability</td>
+                  <td><img src="/static/image/red_circle.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Medium Bike Availability</td>
+                  <td><img src="/static/image/orange_circle.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>High Bike Availability</td>
+                  <td><img src="/static/image/green_circle.png" alt=""></td>
                 </tr>
               </tbody>
             </table>
@@ -259,87 +275,180 @@
         </div>
       </div>
     </div>
-    <h1 style="font-family: SignPainter; font-size: 32px">About Dublin Bikes</h1>
-    <span style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
-      <h6>The Lorem ipsum text is derived from sections 1.10.32 and 1.10.33 of Cicero's De finibus bonorum et malorum.
-        Fill in the below details to
-        view weather prediction, bikes availability and more!</h6>
-    </span>
     <br />
-
-    <input type="hidden" id="selected_start_location">
-    <input type="hidden" id="selected_destination_location">
-    <input type="hidden" id="selected_datetime">
-
-
-    <!-- Modal for source destination marker-->
-    <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
-    <div class="modal fade" id="sourceDestinationModal" role="dialog">
-      <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
-            <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
-            <h4 class="modal-title">Choose a source or destination for this marker</h4>
+    <h1 style="font-family: SignPainter; font-size: 57px; text-align: center">About Dublin Bikes</h1>
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color: rgb(41, 41, 41);">
+          <span
+            style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter; color: white">Stations</span>
+        </div>
+        <div class="panel-body">
+          <h5 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            For easy access and optimal use, Just Eat dublinbikes stations are located throughout the city
+            center. Moreover, they are in close proximity with one another and every station has minimum of 15 stands.
+            This is one of the primary reason which makes the service reliable and easier to use.
+            All the station terminals accept an Annual Card, an associated Leap Card or a 3 Day Ticket.
+            Bikes are secured onto the stands by means of a locking system.
+          </h5>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color: rgb(41, 41, 41);">
+          <span
+            style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter; color: white">Bikes</span>
+        </div>
+        <div class="panel-body">
+          <h5 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            Just Eat dublinbikes are robust, distinguishable, easy to handle and are designed for city use.
+            So, lookout for those all over the Dublin city.
+          </h5>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color: rgb(41, 41, 41);">
+          <span
+            style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter; color: white">How
+            to use Dublin Bikes</span>
+        </div>
+        <div class="panel-body">
+          <h5 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            Renting Just Eat dublinbikes is a very simple process.
+            All the instructions are present on the station menu.
+            Just follow those instructions and you are good to go!
+          </h5>
+        </div>
+      </div>
+    </div>
+    <br />
+    <br />
+    <div class="well col-sm-12"
+      style="background-color: rgb(240, 240, 240); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 14px">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <p style="font-size: 25px; font-weight: lighter">Follow us on</p>
+            <table class="table table-condensed" style="text-align: center">
+              <tbody>
+                <tr>
+                  <td><a href="https://www.facebook.com"><img src="static/image/facebook.png" alt=""></td>
+                  <td><a href="https://twitter.com"><img src="static/image/twitter.png" alt=""></a></td>
+                  <td><a href="https://www.instagram.com"><img src="static/image/instagram.png" alt=""></a></td>
+                  <td><a href="https://youtube.com"><img src="static/image/youtube.png" alt=""></a></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <!-- <div class="modal-body">
+          <div class="col-sm-6">
+            <p style="font-size: 25px; font-weight: lighter">Contact Us</p>
+            <table class="table table-condensed" style="text-align: center">
+              <tbody>
+                <tr>
+                  <td style="font-weight: bold">Phone:</td>
+                  <td>1850 777 070 or 01 424 7605</td>
+                  <td style="font-weight: bold">Email:</td>
+                  <td>contactus@dublinbikes.ie</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br />
+        <div>
+          <table class="table table-condensed" style="text-align: center">
+            <tbody>
+              <tr>
+                <td>
+                  Website designed and developed by Sarvesh Gadgil, Chaitali Keni and Shewta Bondhi Krishnamurthy<br />
+                  Copyright © 2020. All rights reserved.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input type="hidden" id="selected_start_location">
+  <input type="hidden" id="selected_destination_location">
+  <input type="hidden" id="selected_datetime">
+
+
+  <!-- Modal for source destination marker-->
+  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
+  <div class="modal fade" id="sourceDestinationModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
+          <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+          <h4 class="modal-title">Choose a source or destination for this marker</h4>
+        </div>
+        <!-- <div class="modal-body">
           <p>Some text in the modal.</p>
         </div> -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default sourceButton" data-dismiss="modal"
-              onclick="setStartStationViaOnclick()"
-              style="background-color: rgb(240, 240, 240); color: black">Source</button>
-            <button type="button" class="btn btn-default destinationButton" data-dismiss="modal"
-              onclick="setEndStationViaOnclick()"
-              style="background-color: rgb(240, 240, 240); color: black">Destination</button>
-          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default sourceButton" data-dismiss="modal"
+            onclick="setStartStationViaOnclick()"
+            style="background-color: rgb(240, 240, 240); color: black">Source</button>
+          <button type="button" class="btn btn-default destinationButton" data-dismiss="modal"
+            onclick="setEndStationViaOnclick()"
+            style="background-color: rgb(240, 240, 240); color: black">Destination</button>
         </div>
-
       </div>
+
     </div>
+  </div>
 
-    <!-- Modal for visualisation-->
-    <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
-    <div class="modal fade" id="visualisationModal" role="dialog">
-      <div class="modal-dialog">
+  <!-- Modal for visualisation-->
+  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
+  <div class="modal fade" id="visualisationModal" role="dialog">
+    <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
-            <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
-            <h4 class="modal-title">Bike Availability Grid</h4>
-          </div>
-          <div class="modal-body">
-            <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
-            <ul class="nav nav-pills nav-justified">
-              <li class="active"><a data-toggle="pill" href="#weekly" onclick="getWeeklyBikeAvailabilityGraph()"
-                  style="color: black" id="weekly_tab_id">Weekly</a></li>
-              <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()" style="color: black"
-                  id="hourly_tab_id">Hourly</a></li>
-            </ul>
-            <div class="tab-content">
-              <!-- <div class="tab-pane fade">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
+          <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+          <h4 class="modal-title">Bike Availability Grid</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
+          <ul class="nav nav-pills nav-justified">
+            <li class="active"><a data-toggle="pill" href="#weekly" onclick="getWeeklyBikeAvailabilityGraph()"
+                style="color: black" id="weekly_tab_id">Weekly</a></li>
+            <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()" style="color: black"
+                id="hourly_tab_id">Hourly</a></li>
+          </ul>
+          <div class="tab-content">
+            <!-- <div class="tab-pane fade">
                 <div id="weekly_hourly_data"></div>
               </div> -->
-              <div id="weekly" class="tab-pane fade in active">
-                <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
-                <div id="weekly_chart"></div>
-              </div>
-              <div id="hourly" class="tab-pane fade">
-                <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
-                <div id="hourly_chart"></div>
-              </div>
+            <div id="weekly" class="tab-pane fade in active">
+              <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
+              <div id="weekly_chart"></div>
+            </div>
+            <div id="hourly" class="tab-pane fade">
+              <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
+              <div id="hourly_chart"></div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal"
-              style="background-color: rgb(240, 240, 240); color: black">Close</button>
-          </div>
         </div>
-
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal"
+            style="background-color: rgb(240, 240, 240); color: black">Close</button>
+        </div>
       </div>
+
     </div>
+  </div>
 
   </div>
   <!-- For Google Maps API -->
