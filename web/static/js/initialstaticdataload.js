@@ -14,15 +14,9 @@ const loadStaticBikesData = () => {
         url: API_URL + "/api/station/bikes/static/all",
         type: "GET",
         success: function (response) {
-            // let select_field = "<select id=\"stations\" onchange=\"selectLocationAndDisplayBikesInfo();\">";
-            // select_field += "<option value=''>Select a location</option>"
-
             // Iterating the response
             response.forEach(function (element) {
                 static_bikes_details.push(element);
-
-                // Pushing values for select field
-                // select_field += "<option value=" + element.number + ">" + element.name + "</option>";
 
                 // Pushing the co-ordinates in map
                 markersOnMap.push({
@@ -31,19 +25,12 @@ const loadStaticBikesData = () => {
                         lat: parseFloat(element.lat),
                         lng: parseFloat(element.lng)
                     }],
-                    station_id: element.number
+                    station_id: element.number,
+                    bike_stands: element.bike_stands
                 });
             });
 
             markersOnMapCount = markersOnMap.length;
-            // select_field += "</select>";
-
-            // Getting the div id
-            // let bike_locations = $("#bike_locations")[0]
-
-            // Setting values
-            // bike_locations.innerHTML = select_field;
-            // bike_locations.style.display = "block";
 
             // Initialize the map
             initMap();

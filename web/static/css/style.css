@@ -1,0 +1,116 @@
+#map {
+    height: 800px;
+    width: 100%;
+}
+
+/* Loader reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader */
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid rgb(41, 41, 41);
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
+    display: none;
+    text-align: center;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#floating-panel {
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    line-height: 30px;
+    padding-left: 10px;
+    background: #fff;
+    padding: 5px;
+    font-size: 14px;
+    font-family: Arial;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+    display: none;
+}
+
+#legend {
+    position: absolute;
+    right: 10px;
+    bottom: 2%;
+    background-color: #fff;
+    padding: 1px;
+    border: 1px solid #999;
+    text-align: center;
+    line-height: 30px;
+    padding-left: 5px;
+    background: #fff;
+    font-size: 14px;
+    font-family: Arial;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+    display: none;
+}
+
+.leftColumn {
+    width: 25%;
+    display: block;
+    float: left;
+    overflow: auto;
+    height: 1000px;
+}
+
+.rightColumn {
+    width: 75%;
+    display: block;
+    float: right;
+    height: auto;
+    overflow: auto
+}
+
+.sourceButton:hover {
+    background-color: white;
+}
+
+.destinationButton:hover {
+    background-color: white;
+}
+
+div.admin-box {
+    background-color: rgb(216, 216, 216);
+    color: black
+}
+
+.active a {
+    background-color: rgb(216, 216, 216) !important;
+    color: black !important;
+}

@@ -4,6 +4,7 @@
 <head>
   <title>Dublin Bikes</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- For jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -24,128 +25,351 @@
   </script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+  <!-- Sweetalert link -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
   <!-- Custom JS code below -->
   <script type="text/javascript" src="static/js/googlemaps.js"></script>
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
   <script type="text/javascript" src="static/js/stationsearch.js"></script>
   <script type="text/javascript" src="static/js/routes.js"></script>
-
-  <style>
-    #map {
-      height: 700px;
-      width: 100%;
-    }
-  </style>
-  <style>
-    /* Loader reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader */
-    .loader {
-      border: 16px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 16px solid #3498db;
-      width: 60px;
-      height: 60px;
-      -webkit-animation: spin 2s linear infinite;
-      /* Safari */
-      animation: spin 2s linear infinite;
-      display: none;
-    }
-
-    /* Safari */
-    @-webkit-keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-      }
-
-      100% {
-        -webkit-transform: rotate(360deg);
-      }
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
+  <script type="text/javascript" src="static/js/validation.js"></script>
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/weather.css">
+  <link rel="stylesheet" href="static/css/mappopup.css">
+  <link rel="stylesheet" href="static/css/heroimage.css">
+  <link rel="shortcut icon" href="static/image/bike-icon.png">
 </head>
 
 <body>
-  <h1 style="text-align: center"> Welcome to Dublin Bikes </h1><br />
-  <!-- Stations:<div id="bike_locations" style="display: none"></div>
-  <br /> -->
-
-  <label>Start: </label>
-  <input id="start_location">
-  <label>Destination: </label>
-  <input id="destination_location">
-  <div class="container">
-    <div class="row">
-      <div class='col-sm-2'>
-        Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
-      </div>
-      <script type="text/javascript">
-        $(function () {
-          $('#start_datetime_picker').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm'
-          })
-        });
-      </script>
+  <div class="hero-image">
+    <div class="hero-text">
+      <h1 style="font-size:80px">Welcome to Dublin Bikes</h1>
     </div>
   </div>
   <br />
-  <div id="nearest_bike_locations" style="display: none"></div>
-  <!-- <br />
-  <br /> -->
-  <!-- <div id="to_from_info"></div> -->
-  <!-- <div id="start_location_name"></div>
-  <br>
-  <div id="destination_location_name"></div>
-  <br />
-  <br /> -->
-  <button type="button" onclick="getSourceAndDestinationCoordinates()">Show Route</button>
-  <br />
-  <br />
-  <div class="loader" id="show_hide_loader"></div>
-  <div id="route_info"></div>
-  <br />
-  <br />
-  <div id="map"></div>
+  <div style="margin: 5px">
+    <h1
+      style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter">
+      Fill in the below details to view weather prediction, bikes
+      availability and more!</h1><br>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="well well-lg col-sm-12" style="background-color: rgb(240, 240, 240);">
+          <div class="form-group">
+            <label for="start">Search Source Station:<span style="color: red">*</span></label>
+            <input class="form-control" id="start_location" onchange="checkStartFieldValidity()"
+              onkeyup="removeStartStationOnKeyUp()">
+            <span id="start_validation" style="color: red; font-size: small; display: none">Please enter source</span>
+          </div>
+          <div class="form-group">
+            <label for="dest">Search Destination Station:<span style="color: red">*</span></label>
+            <input class="form-control" id="destination_location" onchange="checkDestinationFieldValidity()"
+              onkeyup="removeDestinationStationOnKeyUp()">
+            <span id="destination_validation" style="color: red; font-size: small; display: none">Please enter
+              destination</span>
+          </div>
+
+          <div class="form-group">
+            <label for="start_dt">Pick a Start Date:<span style="color: red">*</span></label>
+            <div class='input-group date' id='start_datetime_picker'>
+              <input type='text' class="form-control" readonly />
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+            <span id="start_date_validation" style="color: red; font-size: small; display: none">Please enter start
+              date</span>
+            <script type="text/javascript">
+              $(function () {
+                $('#start_datetime_picker').datetimepicker({
+                  format: 'DD/MM/YYYY HH:mm',
+                  ignoreReadonly: true,
+                  minDate: moment()
+                }).on("dp.change", function (e) {
+                  $("#selected_datetime")[0].value = e.date.format('DD/MM/YYYY HH:mm');
+                  $("#start_date_validation")[0].style.display = "none";
+                });
+              });
+            </script>
+          </div>
+          <div id="nearest_bike_locations" style="display: none"></div>
+          <br />
+          <button type="button" class="btn btn-block" onclick="getSourceAndDestinationCoordinates()"
+            style="background-color: rgb(41, 41, 41); color: white">Show
+            Route</button>
+          <br /><br />
+          <div class="loader" id="show_hide_loader"></div>
+          <!-- <div class="col-sm-10 col-sm-offset-4"> -->
+          <div class="panel panel-default" style="box-shadow: 2px 4px 5px lightgray; display: none" id="weather_div">
+            <div class="panel-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <span style="font-weight: bolder; font-size: 30px;" id="temperature"></span><br />
+                    <span style="font-size: 15px;" id="weather_desc"></span>
+                  </div>
+                  <div class="col-sm-8">
+                    <div class="icon cloudy col-sm-8" id="div_cloudy" style="display: none;">
+                      <div class="cloud"></div>
+                      <div class="cloud"></div>
+                    </div>
+                    <div class="icon sun-shower" id="div_drizzle" style="display: none">
+                      <div class="cloud"></div>
+                      <div class="sun">
+                        <div class="rays"></div>
+                      </div>
+                      <div class="rain"></div>
+                    </div>
+                    <div class="icon rainy" id="div_high_rain" style="display: none">
+                      <div class="cloud"></div>
+                      <div class="rain"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="warning_message"></div>
+              <table class="table table-hover">
+                <tbody style="text-align: justify">
+                  <tr>
+                    <td>Max</td>
+                    <td><span id="max_temp"></span></td>
+                  </tr>
+                  <tr>
+                    <td>Min</td>
+                    <td><span id="min_temp"></span></td>
+                  </tr>
+                  <tr>
+                    <td>Feels Like</td>
+                    <td><span id="feels_like"></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="route_info"></div>
+      </div>
+      <div class="col-sm-9">
+        <div class="well well-sm" style="background-color: rgb(240, 240, 240);">
+          <div id="floating-panel">
+            Distance: <span id="distance" style="font-weight: bolder"></span><br />
+            Duration: <span id="duration" style="font-weight: bolder"></span>
+          </div>
+
+          <div id="legend">
+            <div style="text-align: right">
+              <span style="float: left; font-size: larger">Legend</span>&nbsp;&nbsp;
+              <a href="#!" data-toggle="collapse" data-target="#legend_table" style="color: black;">
+                <span class="glyphicon glyphicon-sort"></span></a>
+            </div>
+            <table class="table table-hover table-condensed collapse" style="width: 100%; text-align: left"
+              id="legend_table">
+              <tbody>
+                <tr>
+                  <td>Available Stations</td>
+                  <td><img src="/static/image/marker_red_mini.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Source Station</td>
+                  <td><img src="/static/image/marker_black_mini.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Destination Station</td>
+                  <td><img src="/static/image/marker_green_mini.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Low Bike Availability</td>
+                  <td><img src="/static/image/red_circle.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>Medium Bike Availability</td>
+                  <td><img src="/static/image/orange_circle.png" alt=""></td>
+                </tr>
+                <tr>
+                  <td>High Bike Availability</td>
+                  <td><img src="/static/image/green_circle.png" alt=""></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="map"></div>
+          <div id="startContentCreate"></div>
+          <div id="destinationContentCreate"></div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <h1 style="font-family: SignPainter; font-size: 57px; text-align: center">About Dublin Bikes</h1>
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color: rgb(41, 41, 41);">
+          <span
+            style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter; color: white">Stations</span>
+        </div>
+        <div class="panel-body">
+          <h5 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            For easy access and optimal use, Just Eat dublinbikes stations are located throughout the city
+            center. Moreover, they are in close proximity with one another and every station has minimum of 15 stands.
+            This is one of the primary reason which makes the service reliable and easier to use.
+            All the station terminals accept an Annual Card, an associated Leap Card or a 3 Day Ticket.
+            Bikes are secured onto the stands by means of a locking system.
+          </h5>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color: rgb(41, 41, 41);">
+          <span
+            style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter; color: white">Bikes</span>
+        </div>
+        <div class="panel-body">
+          <h5 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            Just Eat dublinbikes are robust, distinguishable, easy to handle and are designed for city use.
+            So, lookout for those all over the Dublin city.
+          </h5>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color: rgb(41, 41, 41);">
+          <span
+            style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter; color: white">How
+            to use Dublin Bikes</span>
+        </div>
+        <div class="panel-body">
+          <h5 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+            Renting Just Eat dublinbikes is a very simple process.
+            All the instructions are present on the station menu.
+            Just follow those instructions and you are good to go!
+          </h5>
+        </div>
+      </div>
+    </div>
+    <br />
+    <br />
+    <div class="well col-sm-12"
+      style="background-color: rgb(240, 240, 240); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 14px">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <p style="font-size: 25px; font-weight: lighter">Follow us on</p>
+            <table class="table table-condensed" style="text-align: center">
+              <tbody>
+                <tr>
+                  <td><a href="https://www.facebook.com"><img src="static/image/facebook.png" alt=""></td>
+                  <td><a href="https://twitter.com"><img src="static/image/twitter.png" alt=""></a></td>
+                  <td><a href="https://www.instagram.com"><img src="static/image/instagram.png" alt=""></a></td>
+                  <td><a href="https://youtube.com"><img src="static/image/youtube.png" alt=""></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-6">
+            <p style="font-size: 25px; font-weight: lighter">Contact Us</p>
+            <table class="table table-condensed" style="text-align: center">
+              <tbody>
+                <tr>
+                  <td style="font-weight: bold">Phone:</td>
+                  <td>1850 777 070 or 01 424 7605</td>
+                  <td style="font-weight: bold">Email:</td>
+                  <td>contactus@dublinbikes.ie</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br />
+        <div>
+          <table class="table table-condensed" style="text-align: center">
+            <tbody>
+              <tr>
+                <td>
+                  Website designed and developed by Sarvesh Gadgil, Chaitali Keni and Shewta Bondhi Krishnamurthy<br />
+                  Copyright © 2020. All rights reserved.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <input type="hidden" id="selected_start_location">
   <input type="hidden" id="selected_destination_location">
+  <input type="hidden" id="selected_datetime">
 
 
-  <!-- Modal -->
+  <!-- Modal for source destination marker-->
+  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
   <div class="modal fade" id="sourceDestinationModal" role="dialog">
     <div class="modal-dialog">
 
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
+          <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
           <h4 class="modal-title">Choose a source or destination for this marker</h4>
         </div>
-        <!-- <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div> -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal"
-            onclick="setStartStationViaOnclick()">Source</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal"
-            onclick="setEndStationViaOnclick()">Destination</button>
+          <button type="button" class="btn btn-default sourceButton" data-dismiss="modal"
+            onclick="setStartStationViaOnclick()"
+            style="background-color: rgb(240, 240, 240); color: black">Source</button>
+          <button type="button" class="btn btn-default destinationButton" data-dismiss="modal"
+            onclick="setEndStationViaOnclick()"
+            style="background-color: rgb(240, 240, 240); color: black">Destination</button>
         </div>
       </div>
 
     </div>
   </div>
 
+  <!-- Modal for visualisation-->
+  <!-- Reference: https://www.w3schools.com/bootstrap/bootstrap_modal.asp -->
+  <div class="modal fade" id="visualisationModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: rgb(41, 41, 41); color: white">
+          <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+          <h4 class="modal-title">Bike Availability Grid</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Bootstap tabs reference: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
+          <ul class="nav nav-pills nav-justified">
+            <li class="active"><a data-toggle="pill" href="#weekly" onclick="getWeeklyBikeAvailabilityGraph()"
+                style="color: black" id="weekly_tab_id">Weekly</a></li>
+            <li><a data-toggle="pill" href="#hourly" onclick="getHourlyBikeAvailabilityGraph()" style="color: black"
+                id="hourly_tab_id">Hourly</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="weekly" class="tab-pane fade in active">
+              <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
+              <div id="weekly_chart"></div>
+            </div>
+            <div id="hourly" class="tab-pane fade">
+              <h3>Hourly Bike Availability for <span id="day_and_date_for_graph"></span></h3>
+              <div id="hourly_chart"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal"
+            style="background-color: rgb(240, 240, 240); color: black">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
 
   <!-- For Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>

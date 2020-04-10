@@ -5,10 +5,10 @@
  };
 
  const start_location_table =
-     "<h2>Choose starting station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
+     "<h5><b>Choose starting station from below:</b></h5><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
 
  const destination_location_table =
-     "<h2>Choose destination station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
+     "<h5><b>Choose destination station from below:</b></h5><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
 
  $(function () {
      $("#start_location").autocomplete({
@@ -61,14 +61,15 @@
          url: API_URL + "/api/google/get/place/coordinates?place_id=" + place_id,
          type: "GET",
          success: function (response) {
+             $("#nearest_bike_locations")[0].innerText = "";
              if (response.station_id == null) {
                  displayNearestStations(response, locType);
              } else {
                  const station_name = response.station_name.replace("'", "###");
                  if (locType == LOCATION.SOURCE) {
-                     chooseStartLocation(response.station_id, station_name, response.available_bike_stands, response.available_bikes);
+                     chooseStartLocation(response.station_id, station_name);
                  } else {
-                     chooseDestinationLocation(response.station_id, station_name, response.available_bike_stands, response.available_bikes);
+                     chooseDestinationLocation(response.station_id, station_name);
                  }
              }
          },
@@ -82,18 +83,13 @@
 
  const setStart = (data) => {
      let startLoc = $("#selected_start_location")[0];
-     startLoc.innerText = data;
+     startLoc.value = data;
  }
 
  const setDestination = (data) => {
      let startLoc = $("#selected_destination_location")[0];
-     startLoc.innerText = data;
+     startLoc.value = data;
  }
-
- //  const resetToFromInfo = () => {
- //      let to_from_info = $("#to_from_info")[0];
- //      to_from_info.innerHTML = "";
- //  }
 
  const isLocationSet = (locType) => {
      if (locType == LOCATION.SOURCE) {
@@ -110,7 +106,6 @@
      } else if (locType == LOCATION.DESTINATION && isLocationSet(locType)) {
          setDestination("");
      }
-     //  resetToFromInfo();
 
      google.maps.event.trigger(map, "resize");
      map.panTo(latAndLng);
@@ -140,7 +135,7 @@
              infowindow.open(map, suggestedStations);
              InforObj.push(infowindow);
              // Creating link
-             let link = "<a href='#!' onclick='";
+             let link = "<a href='#!' class=\"list-group-item\" onclick='";
              if (locType == LOCATION.SOURCE) {
                  link += "chooseStartLocation";
              } else {
@@ -148,144 +143,73 @@
              }
              const stationReplaced = station_name.replace("'", "###");
              link += "(" + station_id + ",\"" + stationReplaced + "\")'>" + station_name + "</a>";
-             tableDetails += "<tr><td>" + link + "</td></tr>";
-
-             //  $.ajax({
-             //      url: API_URL + "/api/station/bikes/get/" + markersOnMap[i].station_id,
-             //      type: "GET",
-             //      success: function (response) {
-             //          const infowindow = new google.maps.InfoWindow({
-             //              content: "Station Name: " + station_name
-             //              //  +  "<br/>Available Bike Stands: " + response.available_bike_stands +
-             //              //      "<br/>Available Bikes: " + response.available_bikes
-             //          });
-             //          const suggestedStations = markersArray.find(predicate => predicate
-             //              .station_id == station_id);
-             //          infowindow.open(map, suggestedStations);
-             //          InforObj.push(infowindow);
-             //          // Creating link
-             //          let link = "<a href='#!' onclick='";
-             //          if (locType == LOCATION.SOURCE) {
-             //              link += "chooseStartLocation";
-             //          } else {
-             //              link += "chooseDestinationLocation";
-             //          }
-             //          const stationReplaced = station_name.replace("'", "###");
-             //          link += "(" + station_id + ",\"" + stationReplaced +
-             //              "\"," + response.available_bike_stands + "," + response.available_bikes + ")'>" + station_name +
-             //              "</a>";
-             //          // Creating td for table
-             //          //  tableDetails += "<tr><td>" + link + "</td><td>" + response.available_bike_stands +
-             //          //      "</td><td>" +
-             //          //      response.available_bikes + "</td></tr>";
-             //          tableDetails += "<tr><td>" + link + "</td></tr>";
-             //      },
-             //      complete: function (data) {
-             //          // Getting the div id
-             //          let nearest_bike_locations = $("#nearest_bike_locations")[0]
-
-             //          // Setting values
-             //          nearest_bike_locations.innerHTML = tableDetails;
-             //          nearest_bike_locations.style.display = "block";
-             //      },
-             //      error: function (xhr, ajaxOptions, thrownError) {
-             //          console.log("Error in displayNearestStations()")
-             //          console.log(xhr.status);
-             //          console.log(thrownError);
-             //      }
-             //  });
-
+             tableDetails += link;
          }
      }
      // Getting the div id
      let nearest_bike_locations = $("#nearest_bike_locations")[0]
      if (!isDataPresent) {
-         //  // Getting the div id
-         //  let nearest_bike_locations = $("#nearest_bike_locations")[0]
-
-         // Setting values
-         nearest_bike_locations.innerHTML = "<br/>No Stations Found";
+         nearest_bike_locations.innerHTML = "<div class=\"alert alert-danger\" style=\"width: auto; text-align: center\">Oops. There are <strong>no stations</strong> found near this location.</div>";
          nearest_bike_locations.style.display = "block";
      } else {
-         tableDetails += "</table>"
+         tableDetails += "</div>"
          // Setting values
          nearest_bike_locations.innerHTML = tableDetails;
          nearest_bike_locations.style.display = "block";
      }
  }
 
- //  const chooseStartLocation = (station_id, station_name, available_bike_stands, available_bikes) => {
  const chooseStartLocation = (station_id, station_name) => {
      if (destinationStation != null && station_id == destinationStation) {
-         alert("Start and destination station cannot be same.")
+         swal("Oops...", "Start and destination station cannot be same!", "warning");
+         $("#start_location")[0].value = $("#selected_start_location")[0].value;
          return;
      }
      station_name = station_name.replace("###", "'");
      closeAllOtherInfo();
      const infowindow = new google.maps.InfoWindow({
          content: "Station Name: " + station_name
-         //  + "<br/>Available Bike Stands: " + available_bike_stands +
-         //      "<br/>Available Bikes: " + available_bikes
      });
      const choosedStation = markersArray.find(predicate => predicate
          .station_id == station_id);
      infowindow.open(map, choosedStation);
      InforObj.push(infowindow);
-     setStart(station_id);
-
-     // Getting the div id
-     //  let starting_location_text = $("#start_location_name")[0];
-
-     // Setting values
-     //  starting_location_text.innerHTML = "Starting station: " + station_name;
+     setStart(station_name);
      $("#start_location")[0].value = station_name;
-
+     $("#start_validation")[0].style.display = "none";
      startStation = station_id;
-
      isStartStation = true;
-
      setStartSelectMarker(choosedStation);
 
      // Remove old routes
      removeRoute();
+     clearAllRouteInfo();
  }
 
- //  const chooseDestinationLocation = (station_id, station_name, available_bike_stands, available_bikes) => {
  const chooseDestinationLocation = (station_id, station_name) => {
      if (startStation != null && station_id == startStation) {
-         alert("Start and destination station cannot be same.")
+         swal("Oops...", "Start and destination station cannot be same!", "warning");
+         $("#destination_location")[0].value = $("#selected_destination_location")[0].value;
          return;
      }
+     station_name = station_name.replace("###", "'");
      closeAllOtherInfo();
      const infowindow = new google.maps.InfoWindow({
          content: "Station Name: " + station_name
-         //  + "<br/>Available Bike Stands: " + available_bike_stands +
-         //      "<br/>Available Bikes: " + available_bikes
      });
      const choosedStation = markersArray.find(predicate => predicate
          .station_id == station_id);
-     //  if (station_id == $("#selected_start_location")[0].innerText) {
-     //      alert('Destination station cannot be same as the starting station');
-     //  } else {
 
      infowindow.open(map, choosedStation);
      InforObj.push(infowindow);
-     setDestination(station_id);
-
-     // Getting the div id
-     //  let destination_location_text = $("#destination_location_name")[0];
-
-     // Setting values
-     //  destination_location_text.innerHTML = "Destination station: " + station_name;
+     setDestination(station_name);
      $("#destination_location")[0].value = station_name;
-
+     $("#destination_validation")[0].style.display = "none";
      destinationStation = station_id;
-
      isStartStation = false;
-
      setEndSelectMarker(choosedStation);
 
      // Remove old routes
      removeRoute();
-     //  }
+     clearAllRouteInfo();
  }
