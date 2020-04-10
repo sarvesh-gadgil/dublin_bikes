@@ -35,54 +35,12 @@
   <script type="text/javascript" src="static/js/initialstaticdataload.js"></script>
   <script type="text/javascript" src="static/js/stationsearch.js"></script>
   <script type="text/javascript" src="static/js/routes.js"></script>
+  <script type="text/javascript" src="static/js/validation.js"></script>
   <link rel="stylesheet" href="static/css/style.css">
   <link rel="stylesheet" href="static/css/weather.css">
   <link rel="stylesheet" href="static/css/mappopup.css">
   <link rel="stylesheet" href="static/css/heroimage.css">
   <link rel="shortcut icon" href="static/image/bike-icon.png">
-  <style>
-    div.admin-box {
-      background-color: rgb(216, 216, 216);
-      color: black
-    }
-
-    .active a {
-      background-color: rgb(216, 216, 216) !important;
-      color: black !important;
-    }
-  </style>
-  <script type="text/javascript">
-    const checkStartFieldValidity = () => {
-      if (startStation == -1) {
-        $("#start_validation")[0].style.display = "block";
-      } else {
-        $("#start_validation")[0].style.display = "none";
-      }
-    }
-    const checkDestinationFieldValidity = () => {
-      if (destinationStation == -1) {
-        $("#destination_validation")[0].style.display = "block";
-      } else {
-        $("#destination_validation")[0].style.display = "none";
-      }
-    }
-    const removeStartStationOnKeyUp = () => {
-      if (sourceMarker != null) {
-        sourceMarker.setIcon("static/image/marker_red.png");
-        sourceMarker = null;
-      }
-      startStation = -1;
-      $("#selected_start_location")[0].value = $("#start_location")[0].value;
-    }
-    const removeDestinationStationOnKeyUp = () => {
-      if (endMarker != null) {
-        endMarker.setIcon("static/image/marker_red.png");
-        endMarker = null;
-      }
-      destinationStation = -1;
-      $("#selected_destination_location")[0].value = $("#destination_location")[0].value;
-    }
-  </script>
 </head>
 
 <body>
@@ -93,18 +51,13 @@
   </div>
   <br />
   <div style="margin: 5px">
-    <!-- Stations:<div id="bike_locations" style="display: none"></div>
-  <br /> -->
     <h1
       style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 24px; font-weight: lighter">
       Fill in the below details to view weather prediction, bikes
       availability and more!</h1><br>
     <div class="row">
       <div class="col-sm-3">
-        <!-- <div class="panel panel-default" style="width: 250px; box-shadow: 2px 4px 5px lightgray;">
-        <div class="panel-body"> -->
         <div class="well well-lg col-sm-12" style="background-color: rgb(240, 240, 240);">
-          <!-- <div class="col-sm-12"> -->
           <div class="form-group">
             <label for="start">Search Source Station:<span style="color: red">*</span></label>
             <input class="form-control" id="start_location" onchange="checkStartFieldValidity()"
@@ -147,29 +100,6 @@
           <button type="button" class="btn btn-block" onclick="getSourceAndDestinationCoordinates()"
             style="background-color: rgb(41, 41, 41); color: white">Show
             Route</button>
-          <!-- </div> -->
-
-
-          <!-- </div>
-      </div> -->
-          <!-- <label>Start: </label>
-      <input id="start_location">
-      <label>Destination: </label>
-      <input id="destination_location">
-      <div class="container">
-        <div class="row">
-          <div class='col-sm-2'>
-            Start Date: <input type='text' class="form-control" id='start_datetime_picker' />
-          </div>
-          <script type="text/javascript">
-            $(function () {
-              $('#start_datetime_picker').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm'
-              })
-            });
-          </script>
-        </div>
-      </div> -->
           <br /><br />
           <div class="loader" id="show_hide_loader"></div>
           <!-- <div class="col-sm-10 col-sm-offset-4"> -->
@@ -267,9 +197,6 @@
           </div>
 
           <div id="map"></div>
-          <!-- <div id="content" style="display: none">
-            Station Name:
-          </div> -->
           <div id="startContentCreate"></div>
           <div id="destinationContentCreate"></div>
         </div>
@@ -392,9 +319,6 @@
           <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
           <h4 class="modal-title">Choose a source or destination for this marker</h4>
         </div>
-        <!-- <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div> -->
         <div class="modal-footer">
           <button type="button" class="btn btn-default sourceButton" data-dismiss="modal"
             onclick="setStartStationViaOnclick()"
@@ -428,9 +352,6 @@
                 id="hourly_tab_id">Hourly</a></li>
           </ul>
           <div class="tab-content">
-            <!-- <div class="tab-pane fade">
-                <div id="weekly_hourly_data"></div>
-              </div> -->
             <div id="weekly" class="tab-pane fade in active">
               <h3>Weekly Bike Availability for <span id="station_name_for_graph"></span></h3>
               <div id="weekly_chart"></div>
@@ -446,11 +367,10 @@
             style="background-color: rgb(240, 240, 240); color: black">Close</button>
         </div>
       </div>
-
     </div>
   </div>
-
   </div>
+
   <!-- For Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"></script>
 </body>

@@ -104,3 +104,13 @@
 .destinationButton:hover {
     background-color: white;
 }
+
+div.admin-box {
+    background-color: rgb(216, 216, 216);
+    color: black
+}
+
+.active a {
+    background-color: rgb(216, 216, 216) !important;
+    color: black !important;
+}

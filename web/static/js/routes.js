@@ -87,7 +87,6 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
     clearAllRouteInfo();
     const degreeCelcius = "°C";
     $("#show_hide_loader")[0].style.display = "block";
-    // let predictionInfo = "Distance: " + distance + "<br/>" + "Duration: " + duration + "<br/><br/>";
     let predictionInfo = "";
     $.ajax({
         url: API_URL + "/api/station/predict?startDate=" + startDate + "&startStation=" + startStation + "&destinationStation=" + destinationStation,
@@ -131,19 +130,6 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             $("#min_temp")[0].innerText = response.temp_min_prediction + degreeCelcius;
             $("#warning_message")[0].innerHTML = warning_message;
 
-            // predictionInfo += "=========Weather Description=======<br/>";
-            // predictionInfo += "Weather Description: " + response.weather_description_prediction + "<br/>";
-            // predictionInfo += "Temperature: " + response.temperature_prediction + "<br/>";
-            // predictionInfo += "Feels Like: " + response.feels_like_prediction + "<br/>";
-            // predictionInfo += "Max Temperature: " + response.temp_max_prediction + "<br/>";
-            // predictionInfo += "Min Temperature: " + response.temp_min_prediction + "<br/><br/>";
-            // predictionInfo += "=========Start Station Info=======<br/>";
-            // predictionInfo += "Available Bikes: " + response.start_station_bikes_prediction + "<br/>";
-            // predictionInfo += "Available Bike Stands: " + response.start_station_bike_stands_prediction + "<br/><br/>";
-            // predictionInfo += "=========Destination Station Info=======<br/>";
-            // predictionInfo += "Available Bikes: " + response.destination_station_bikes_prediction + "<br/>";
-            // predictionInfo += "Available Bike Stands: " + response.destination_station_bike_stands_prediction + "<br/><br/>";
-
             // Setting distance and duration
             $("#distance")[0].innerText = distance;
             $("#duration")[0].innerText = duration;
@@ -152,7 +138,6 @@ const getBikeAndWeatherPrediction = (distance, duration, startDate) => {
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
 
             $("#show_hide_loader")[0].style.display = "none";
-            // $("#route_info")[0].innerHTML = predictionInfo;
             $("#weather_div")[0].style.display = "block";
 
             // create circle for start 
@@ -282,12 +267,9 @@ const showDestinationStationAnalytics = () => {
 const getWeeklyBikeAvailabilityGraph = () => {
     $("#weekly_tab_id").tab('show');
     $("#weekly_chart")[0].innerHTML = "Weekly Data";
-
-    // alert('in getWeeklyBikeAvailabilityGraph')
 }
 
 const getHourlyBikeAvailabilityGraph = () => {
     $("#hourly_tab_id").tab('show');
     $("#hourly_chart")[0].innerHTML = "Hourly Data";
-    // alert('in getHourlyBikeAvailabilityGraph')
 }
