@@ -5,12 +5,15 @@ var destinationStationCircle;
 const getSourceAndDestinationCoordinates = () => {
     const startDate = $("#selected_datetime")[0].value;
     if (startStation == -1) {
-        alert('Please select a start station');
+        $("#start_validation")[0].style.display = "block";
     } else if (destinationStation == -1) {
-        alert('Please select a destination station');
+        $("#destination_validation")[0].style.display = "block";
     } else if (startDate == "") {
-        alert('Please select a start date');
+        $("#start_date_validation")[0].style.display = "block";
     } else {
+        $("#start_validation")[0].style.display = "none";
+        $("#destination_validation")[0].style.display = "none";
+        $("#start_date_validation")[0].style.display = "none";
         $("#nearest_bike_locations")[0].innerText = "";
         const sourceLatLng = markersOnMap.find(predicate => predicate
             .station_id == startStation).LatLng;

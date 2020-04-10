@@ -64,7 +64,8 @@ const setStartStationViaOnclick = () => {
     removeRoute();
     const marker = globalMarker;
     if (destinationStation != null && marker.get('station_id') == destinationStation) {
-        alert("Start and destination station cannot be same.")
+        // alert("Start and destination station cannot be same.")
+        swal("Oops...", "Start and destination station cannot be same!", "warning");
         return;
     }
     isStartStation = true;
@@ -73,6 +74,7 @@ const setStartStationViaOnclick = () => {
     // let starting_location_text = $("#start_location_name")[0];
     // starting_location_text.innerHTML = "Starting station: " + marker.get('placeName');
     $("#start_location")[0].value = marker.get('placeName');
+    $("#start_validation")[0].style.display = "none";
     startStation = marker.get('station_id');
     getBikesAvailabilityDetails();
     if (startStation != -1 && destinationStation != -1 && $("#selected_datetime")[0].value != "") {
@@ -87,7 +89,8 @@ const setEndStationViaOnclick = () => {
     removeRoute();
     const marker = globalMarker;
     if (startStation != null && marker.get('station_id') == startStation) {
-        alert("Start and destination station cannot be same.")
+        // alert("Start and destination station cannot be same.")
+        swal("Oops...", "Start and destination station cannot be same!", "warning");
         return;
     }
     isStartStation = false;
@@ -96,6 +99,7 @@ const setEndStationViaOnclick = () => {
     // let destination_location_text = $("#destination_location_name")[0];
     // destination_location_text.innerHTML = "Destination station: " + marker.get('placeName');
     $("#destination_location")[0].value = marker.get('placeName');
+    $("#destination_validation")[0].style.display = "none";
     destinationStation = marker.get('station_id');
     getBikesAvailabilityDetails();
     if (startStation != -1 && destinationStation != -1 && $("#selected_datetime")[0].value != "") {

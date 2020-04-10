@@ -11,10 +11,10 @@
  //      "<h2>Choose destination station from below:</h2><table border = 1><tr><th>Place Name</th></tr>";
 
  const start_location_table =
-     "<h4>Choose starting station from below:</h4><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
+     "<h5><b>Choose starting station from below:</b></h5><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
 
  const destination_location_table =
-     "<h4>Choose destination station from below:</h4><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
+     "<h5><b>Choose destination station from below:</b></h5><div class=\"list-group\" style=\"text-align: center; font-size: small\">";
 
  $(function () {
      $("#start_location").autocomplete({
@@ -226,7 +226,8 @@
  //  const chooseStartLocation = (station_id, station_name, available_bike_stands, available_bikes) => {
  const chooseStartLocation = (station_id, station_name) => {
      if (destinationStation != null && station_id == destinationStation) {
-         alert("Start and destination station cannot be same.");
+         //  alert("Start and destination station cannot be same.");
+         swal("Oops...", "Start and destination station cannot be same!", "warning");
          $("#start_location")[0].value = $("#selected_start_location")[0].value;
          return;
      }
@@ -249,6 +250,7 @@
      // Setting values
      //  starting_location_text.innerHTML = "Starting station: " + station_name;
      $("#start_location")[0].value = station_name;
+     $("#start_validation")[0].style.display = "none";
 
      startStation = station_id;
 
@@ -258,12 +260,14 @@
 
      // Remove old routes
      removeRoute();
+     clearAllRouteInfo();
  }
 
  //  const chooseDestinationLocation = (station_id, station_name, available_bike_stands, available_bikes) => {
  const chooseDestinationLocation = (station_id, station_name) => {
      if (startStation != null && station_id == startStation) {
-         alert("Start and destination station cannot be same.")
+         //  alert("Start and destination station cannot be same.")
+         swal("Oops...", "Start and destination station cannot be same!", "warning");
          $("#destination_location")[0].value = $("#selected_destination_location")[0].value;
          return;
      }
@@ -290,6 +294,7 @@
      // Setting values
      //  destination_location_text.innerHTML = "Destination station: " + station_name;
      $("#destination_location")[0].value = station_name;
+     $("#destination_validation")[0].style.display = "none";
 
      destinationStation = station_id;
 
@@ -299,5 +304,6 @@
 
      // Remove old routes
      removeRoute();
+     clearAllRouteInfo();
      //  }
  }
