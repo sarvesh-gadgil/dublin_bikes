@@ -275,10 +275,6 @@ const getWeeklyBikeAvailabilityGraph = () => {
 }
 
 const getHourlyBikeAvailabilityGraph = () => {
-    // startDateInDate = new Date($("#selected_datetime")[0].value);
-    // console.log(startDateInDate)
-    // $("#day_and_date_for_graph")[0].innerHTML = weeklyDataLabels[startDateInDate.getDay()] + ", " +
-    //     startDateInDate.getDate() + " " + months[startDateInDate.getMonth()];
     displayHourlyChartPerStation();
     $("#hourly_tab_id").tab('show');
 }

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from datetime import datetime
 import calendar
 import pickle
@@ -69,7 +69,7 @@ def get_bike_data_by_station_id(station_id):
         return jsonify(content)
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
     finally:
         try:
             connection.close()
@@ -108,7 +108,7 @@ def get_all_static_bikes_data():
 
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
     finally:
         try:
             connection.close()
@@ -165,7 +165,7 @@ def get_places_by_query():
 
     except Exception as e:
         print('Error in get_places_by_query:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
 
 
 @app.route("/api/google/get/place/coordinates")
@@ -212,7 +212,7 @@ def get_place_coordinates():
 
     except Exception as e:
         print('Error in get_place_coordinates:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
 
 
 @app.route("/api/station/predict")
@@ -300,7 +300,7 @@ def get_bike_and_weather_prediction():
         return jsonify(content)
     except Exception as e:
         print("Error in get_bike_and_weather_prediction: ", e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
 
 
 @app.route("/api/station/bikes/chart/weekly/<int:station_id>")
@@ -345,7 +345,7 @@ def calculate_average_bike_availability_weekly(station_id):
 
     except Exception as e:
         print('Error in calculate_average_bike_availability_weekly:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
     finally:
         try:
             connection.close()
@@ -389,7 +389,7 @@ def calculate_average_bike_availability_hourly(station_id):
 
     except Exception as e:
         print('Error in calculate_average_bike_availability_hourly:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
     finally:
         try:
             connection.close()

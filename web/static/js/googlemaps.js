@@ -4,7 +4,7 @@ var map;
 var InforObj = [];
 const centerCords = {
     lat: 53.346519,
-    lng: -6.258644
+    lng: -6.268644
 };
 var markersArray = [];
 var sourceMarker = null;
