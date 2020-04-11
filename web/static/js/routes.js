@@ -1,6 +1,7 @@
 var directionsRenderer;
 var startStationCircle;
 var destinationStationCircle;
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const getSourceAndDestinationCoordinates = () => {
     const startDate = $("#selected_datetime")[0].value;
@@ -255,21 +256,29 @@ const clearAllRouteInfo = () => {
 }
 
 const showStartStationAnalytics = () => {
+    currentChartStation = startStation;
     getWeeklyBikeAvailabilityGraph();
     $('#visualisationModal').modal('show');
 }
 
 const showDestinationStationAnalytics = () => {
+    currentChartStation = destinationStation;
     getWeeklyBikeAvailabilityGraph();
     $('#visualisationModal').modal('show');
 }
 
 const getWeeklyBikeAvailabilityGraph = () => {
+    $("#station_name_for_graph")[0].innerHTML = markersArray.find(predicate => predicate
+        .station_id == currentChartStation).placeName;
+    displayWeeklyChartPerStation();
     $("#weekly_tab_id").tab('show');
-    $("#weekly_chart")[0].innerHTML = "Weekly Data";
 }
 
 const getHourlyBikeAvailabilityGraph = () => {
+    // startDateInDate = new Date($("#selected_datetime")[0].value);
+    // console.log(startDateInDate)
+    // $("#day_and_date_for_graph")[0].innerHTML = weeklyDataLabels[startDateInDate.getDay()] + ", " +
+    //     startDateInDate.getDate() + " " + months[startDateInDate.getMonth()];
+    displayHourlyChartPerStation();
     $("#hourly_tab_id").tab('show');
-    $("#hourly_chart")[0].innerHTML = "Hourly Data";
 }

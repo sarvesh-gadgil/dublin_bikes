@@ -13,6 +13,7 @@ var isStartStation = null;
 var startStation = -1; // -1 means station has not been choosed
 var destinationStation = -1;
 var globalMarker = null;
+var currentChartStation = -1;
 
 var startpopup, destinationpopup, Popup;
 
@@ -99,7 +100,7 @@ const getBikesAvailabilityDetails = () => {
     const marker = globalMarker;
     closeAllOtherInfo();
     const infowindow = new google.maps.InfoWindow({
-        content: "Station Name: " + marker.get('placeName')
+        content: "Station Name: <b>" + marker.get('placeName') + "</b>"
     });
     infowindow.open(marker.get('map'), marker);
     InforObj.push(infowindow);
