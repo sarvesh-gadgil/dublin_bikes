@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from datetime import datetime
 import calendar
 import pickle
@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 GOOGLE_MAPS_KEY = "AIzaSyASZwn9rm720DhYXGEw5FAn-Frp-Oi1bCY"
 
+DAYS = ["DUMMY", "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
 DAY_NAME_ONE_HOT_ENCODED = {"Monday": [1, 0, 0, 0, 0, 0], "Tuesday": [0, 0, 0, 0, 1, 0],
                             "Wednesday": [0, 0, 0, 0, 0, 1],
                             "Thursday": [0, 0, 0, 1, 0, 0], "Friday": [0, 0, 0, 0, 0, 0],
@@ -68,7 +69,7 @@ def get_bike_data_by_station_id(station_id):
         return jsonify(content)
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
     finally:
         try:
             connection.close()
@@ -107,7 +108,7 @@ def get_all_static_bikes_data():
 
     except Exception as e:
         print('Error in get_station_details_by_station_id:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
     finally:
         try:
             connection.close()
@@ -164,7 +165,7 @@ def get_places_by_query():
 
     except Exception as e:
         print('Error in get_places_by_query:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
 
 
 @app.route("/api/google/get/place/coordinates")
@@ -211,7 +212,7 @@ def get_place_coordinates():
 
     except Exception as e:
         print('Error in get_place_coordinates:', e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
 
 
 @app.route("/api/station/predict")
@@ -299,7 +300,101 @@ def get_bike_and_weather_prediction():
         return jsonify(content)
     except Exception as e:
         print("Error in get_bike_and_weather_prediction: ", e)
-        return "Error"
+        abort(jsonify(message="Something went wrong"), 500)
+
+
+@app.route("/api/station/bikes/chart/weekly/<int:station_id>")
+def calculate_average_bike_availability_weekly(station_id):
+    # Connect to database
+    connection = dbconnect.get_db_connection()
+
+    # Create sql
+    sql = "SELECT DAYOFWEEK(date_created),hour(date_created),floor(avg(available_bikes)),number " \
+          "FROM dublin_bikes.dynamic_bike_details where number in ({0}) " \
+          "group by number, hour(date_created),DAYOFWEEK(date_created) order by 4, 1,2".format(int(station_id))
+
+    try:
+        # Create cursor object
+        cursor = connection.cursor()
+
+        # Execute query
+        cursor.execute(sql)
+
+        # Getting all the records
+        rows = cursor.fetchall()
+        weekdays_count = {}
+
+        # Iterating all records
+        for result in rows:
+            if DAYS[result[0]] in weekdays_count.keys():
+                weekdays_count[DAYS[result[0]]] += result[2]
+            else:
+                weekdays_count[DAYS[result[0]]] = result[2]
+
+        # Creating JSON response
+        content = {"monday": int(round(weekdays_count['MONDAY'] / 24)),
+                   "tuesday": int(round(weekdays_count['TUESDAY'] / 24)),
+                   "wednesday": int(round(weekdays_count['WEDNESDAY'] / 24)),
+                   "thursday": int(round(weekdays_count['THURSDAY'] / 24)),
+                   "friday": int(round(weekdays_count['FRIDAY'] / 24)),
+                   "saturday": int(round(weekdays_count['SATURDAY'] / 24)),
+                   "sunday": int(round(weekdays_count['SUNDAY'] / 24))}
+
+        # Return response
+        return jsonify(content)
+
+    except Exception as e:
+        print('Error in calculate_average_bike_availability_weekly:', e)
+        abort(jsonify(message="Something went wrong"), 500)
+    finally:
+        try:
+            connection.close()
+        except Exception as e:
+            print("Error in closing connection", e)
+
+
+@app.route("/api/station/bikes/chart/hourly/<int:station_id>")
+def calculate_average_bike_availability_hourly(station_id):
+    # Convert start date into date type
+    start_date = datetime.strptime(request.args.get("startDate"), "%d/%m/%Y %H:%M")
+
+    # Connect to database
+    connection = dbconnect.get_db_connection()
+
+    # Create sql
+    sql = "SELECT hour(date_created),floor(avg(available_bikes)) " \
+          "FROM dublin_bikes.dynamic_bike_details where number in ({0}) and DAYOFWEEK(date_created) = {1} " \
+          "group by number, hour(date_created),DAYOFWEEK(date_created) " \
+          "order by 1,2".format(int(station_id), DAYS.index(calendar.day_name[start_date.weekday()].upper()))
+
+    try:
+        # Create cursor object
+        cursor = connection.cursor()
+
+        # Execute query
+        cursor.execute(sql)
+
+        # Getting all the records
+        rows = cursor.fetchall()
+        hourly_data = {}
+        counter = 0
+
+        # Iterating rows
+        for result in rows:
+            hourly_data["hour_" + str(counter)] = result[1]
+            counter += 1
+
+        # Return JSON response
+        return jsonify(hourly_data)
+
+    except Exception as e:
+        print('Error in calculate_average_bike_availability_hourly:', e)
+        abort(jsonify(message="Something went wrong"), 500)
+    finally:
+        try:
+            connection.close()
+        except Exception as e:
+            print("Error in closing connection", e)
 
 
 def load_ml_model(path):
